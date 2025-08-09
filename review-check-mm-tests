@@ -1,0 +1,69 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+if [[ $# -lt 1 ]]; then
+	error "usage: $(basename $0) [name] <version>"
+fi
+name=$1
+version=$2
+
+check_prep
+
+tag="$(get_review_tag $name)"
+if ! rev_exists $tag; then
+	error "review for '$name' not started"
+fi
+
+function run_mm_tests()
+{
+	# Execute the tests using virtme-ng. We use the overlay rwdir for some
+	# of the hugetlb tests that need access to /mnt.
+	vng --overlay-rwdir /mnt -m 2G -p 2 --cwd tools/testing/selftests/mm -- sudo ./run_vmtests.sh
+}
+
+tmpdir="$(get_temp_dir)"
+cleanup_dir_on_exit $tmpdir
+msgid="$(get_review_msgid $name)"
+mbox_path=$(retrieve_mbox $name $msgid $tmpdir)
+
+if [[ -z "$version" ]]; then
+	version="$(get_latest_revision ${mbox_path})"
+fi
+
+branch="$(get_review_branch $name $version)"
+if ! rev_exists $branch; then
+	error "cannot find branch '$branch'"
+fi
+
+curr_ref="$(get_curr_ref)"
+
+# Configure and build kernel.
+git checkout -q $branch
+${script_dir}/hooks/kernel-config
+${script_dir}/hooks/kernel-build
+
+# check_prep put us in the root kernel directory.
+
+# Now build and run xthe userland VMA tests.
+push tools/testing/vma
+make clean
+make -j32
+./vma
+pop
+
+# Now build the mm selftests.
+push tools/testing/selftests/mm
+make clean
+make -j $(nproc)
+pop
+
+logpath="$tmpdir/mm-tests-$name.log"
+
+if ! run_mm_tests 2>&1 | tee $logpath; then
+	echo # Add space
+	echo "-- not ok output: --"
+	grep "not ok" $logpath
+	git checkout -q "${curr_ref}"
+fi
+
+git checkout -q "${curr_ref}"

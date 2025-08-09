@@ -3,7 +3,7 @@
 A series of scripts to help reviewing of kernel patch series. These are
 essentially light wrappers around other tooling to make review faster.
 
-DISCLAIMER: I don't guarantee these won't lose you work, destroy your git repos,
+**DISCLAIMER:** I don't guarantee these won't lose you work, destroy your git repos,
             cause lego to fall beneath your bare foot such that you step on it
             or any other such calamities and I disclaim all responsibility for
             such! Use these at your own risk.
@@ -84,6 +84,12 @@ diff comparisons.
 
 * `review-read [name]` - Retrieve the mail for all versions of the series and
   all replies, and load it in neomutt.
+
+* `review-check-mm-tests [name] <version>` - build series at specified version
+  or if not specified, the latest, compile the mm self tests and then run them
+  in this kernel version. **WARNING:** this runs with sudo and R/W with access
+  to host file system. Some tests won't work if you dont' do this, so don't
+  blame me if your filesystem breaks.
 
 ## Credit
 
@@ -195,3 +201,10 @@ $ review-read procmap_query
 ```
 
 ![screenshot of reading mail direct](screenshot_read.png)
+
+Run all the mm self-tests at the latest version:
+
+```
+$ review-check-mm-tests
+< test results >
+```
