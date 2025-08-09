@@ -1,0 +1,27 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+if [[ $# -lt 3 ]]; then
+	usage "[name] [head] [msgid]"
+fi
+name=$1
+head=$2
+msgid=$3
+
+check_prep
+
+if ! rev_exists $head; then
+	error "HEAD '$head' doesn't exist"
+fi
+
+tag="$(get_review_tag $name)"
+if rev_exists $tag; then
+	error "review for '$name' already begun"
+fi
+
+# We tag early so we don't have any issues with trying again on a broken get.
+git checkout -q $head
+git tag $tag -m "$msgid"
+
+# Now get everything we have.
+review-get $name

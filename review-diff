@@ -1,0 +1,29 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+if [[ $# -lt 1 ]]; then
+	error "usage: $(basename $0) [name]"
+fi
+name=$1
+
+check_prep
+if ! has_review_started $name; then
+	warn "review for '$name' not started"
+fi
+
+msgid="$(get_review_msgid $name)"
+tmpdir="$(get_temp_dir)"
+cleanup_dir_on_exit $tmpdir
+
+mbox_path=$(retrieve_mbox $name $msgid $tmpdir quiet)
+if [[ -z ${mbox_path} ]]; then
+	error "could not retrieve mbox"
+fi
+
+curr_version="$(get_latest_revision ${mbox_path})"
+if [[ ${curr_version} -eq 1 ]]; then
+	error "v1, nothing to diff against"
+fi
+prev_version=$((${curr_version} - 1))
+
+review_range_diff $name $name ${mbox_path} ${mbox_path} $tmpdir ${prev_version} ${curr_version}

@@ -1,0 +1,44 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+if [[ $# -lt 1 ]]; then
+	error "usage: $(basename $0) [name]"
+fi
+name=$1
+
+check_prep
+
+msgid="$(get_review_msgid $name)"
+if [[ -z "$msgid" ]]; then
+	error "review not started for '$name'"
+fi
+
+tmpdir="$(get_temp_dir)"
+cleanup_dir_on_exit $tmpdir
+
+mbox_path=$(retrieve_mbox $name $msgid $tmpdir)
+latest_revision="$(get_latest_revision ${mbox_path})"
+
+if [[ -z "${latest_revision}" ]]; then
+	error "Unable to determine latest series revision"
+fi
+
+curr_ref="$(get_curr_ref)"
+tag="$(get_review_tag $name)"
+for n in $(seq 1 ${latest_revision}); do
+	branch="$(get_review_branch $name $n)"
+
+	# We only care about trailers if branch already exists. This also
+	# allows us to handle 3-way merges on conflict.
+	if rev_exists $branch; then
+		# TODO: trailers.
+		continue
+	fi
+
+	# Create review branch.
+	git checkout -q $tag
+	git checkout -b $branch # Intentionally not quiet.
+	shazam_at_version $tag ${mbox_path} $n
+done
+# Restore prior ref.
+git checkout -q "${curr_ref}"

@@ -1,0 +1,51 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+if [[ $# -lt 1 ]]; then
+	error "usage: $(basename $0) [name] <version>"
+fi
+name=$1
+version=$2
+
+check_prep
+
+tag="$(get_review_tag $name)"
+if ! rev_exists $tag; then
+	error "review for '$name' not started"
+fi
+
+tmpdir="$(get_temp_dir)"
+cleanup_dir_on_exit $tmpdir
+msgid="$(get_review_msgid $name)"
+mbox_path=$(retrieve_mbox $name $msgid $tmpdir)
+
+# If no version specified, get latest.
+if [[ -z "$version" ]]; then
+	version="$(get_latest_revision ${mbox_path})"
+fi
+
+branch="$(get_review_branch $name $version)"
+if ! rev_exists $branch; then
+	error "cannot find branch '$branch'"
+fi
+
+curr_ref="$(get_curr_ref)"
+
+# Go to the base first and configure there.
+git checkout -q $tag
+make clean
+${script_dir}/hooks/kernel-config
+
+# On assumption b4 doesn't do anything odd when base commit specified, start
+# from common base.
+
+from=$(get_ref_hash "$tag")
+to=$(get_ref_hash "$branch")
+
+git checkout -q $to
+git rebase --exec ${script_dir}/hooks/kernel-build $from
+git checkout -q "${curr_ref}"
+
+echo "All commits built OK."
+
+checkpatch_range "${mbox_path}" $version

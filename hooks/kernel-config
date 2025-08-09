@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+make clean
+vng --kconfig --config ${script_dir}/hooks/extra_config 2>/dev/null

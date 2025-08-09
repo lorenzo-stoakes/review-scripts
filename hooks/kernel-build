@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+show_rev_summary
+
+# If the series introduces config options, we want them turned on. This assumes
+# we already configured using a base configuration before beginning.
+yes | make oldconfig >/dev/null || true
+
+if ! make -j $(nproc); then
+	show_rev_summary
+	error "BUILD FAILURE!"
+fi

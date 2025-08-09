@@ -1,0 +1,39 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+if [[ $# -lt 2 ]]; then
+	error "usage: $(basename $0) [prev name] [curr name] <prev version> <curr version>"
+fi
+prev_name=$1
+curr_name=$2
+prev_version=$3
+curr_version=$4
+
+check_prep
+if ! has_review_started ${prev_name}; then
+	warn "review for '${prev_name}' not started"
+fi
+if ! has_review_started $curr_name; then
+	warn "review for '${curr_name}' not started"
+fi
+
+tmpdir="$(get_temp_dir)"
+cleanup_dir_on_exit $tmpdir
+
+prev_msgid="$(get_review_msgid ${prev_name})"
+curr_msgid="$(get_review_msgid ${curr_name})"
+
+prev_mbox_path=$(retrieve_mbox "${prev_name}" ${prev_msgid} $tmpdir quiet)
+if [[ -z ${prev_mbox_path} ]]; then
+	error "could not retrieve mbox for '${prev_name}'"
+fi
+
+curr_mbox_path=$(retrieve_mbox "${curr_name}" ${curr_msgid} $tmpdir quiet)
+if [[ -z ${curr_mbox_path} ]]; then
+	error "could not retrieve mbox for '${curr_name}'"
+fi
+
+prev_version=${prev_version:-"$(get_latest_revision ${prev_mbox_path})"}
+curr_version=${curr_version:-"$(get_latest_revision ${curr_mbox_path})"}
+
+review_range_diff ${prev_name} ${curr_name} ${prev_mbox_path} ${curr_mbox_path} $tmpdir ${prev_version} ${curr_version}

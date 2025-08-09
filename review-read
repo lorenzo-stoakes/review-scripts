@@ -1,0 +1,21 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+if [[ $# -lt 1 ]]; then
+	error "usage: $(basename $0) [name]"
+fi
+name=$1
+
+check_prep
+
+msgid="$(get_review_msgid $name)"
+if [[ -z "$msgid" ]]; then
+	error "review not started for '$name'"
+fi
+
+tmpdir="$(get_temp_dir)"
+cleanup_dir_on_exit $tmpdir
+
+mbox_path=$(retrieve_mbox $name $msgid $tmpdir)
+
+neomutt -f "${mbox_path}"

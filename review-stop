@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+if [[ $# -lt 1 ]]; then
+	usage "[name] <warn on missing tag>"
+fi
+name=$1
+warn=$2
+
+check_prep
+
+tag="$(get_review_tag $name)"
+if ! rev_exists $tag; then
+	msg="review for '$name' not started"
+
+	if [[ -n "$warn" ]]; then
+		warn $msg
+		exit 1
+	fi
+	error $msg
+fi
+
+git tag -d $tag >/dev/null
+
+# TODO, rest...
