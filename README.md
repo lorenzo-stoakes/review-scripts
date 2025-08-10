@@ -85,11 +85,15 @@ diff comparisons.
 * `review-read [name]` - Retrieve the mail for all versions of the series and
   all replies, and load it in neomutt.
 
-* `review-check-mm-tests [name] <version>` - build series at specified version
+* `review-check-mm-tests [name] <version>` - Build series at specified version
   or if not specified, the latest, compile the mm self tests and then run them
   in this kernel version. **WARNING:** this runs with sudo and R/W with access
   to host file system. Some tests won't work if you dont' do this, so don't
   blame me if your filesystem breaks.
+
+* `review-mm-tests <--vma-tests-only> <--mm-tests-only>` - Build/run VMA tests
+  and/or memory management self tests, but _no review has to be active_, this
+  will simply be run against the current kernel tree for convenience.
 
 ## Credit
 

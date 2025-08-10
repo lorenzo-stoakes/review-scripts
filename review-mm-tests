@@ -1,0 +1,33 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+# usage:
+# 	--vma-tests-only - only build/run VMA tests, do not build/run mm self tests.
+#	--mm-tests-only  - only build/run mm self tests, do not build/run VMA tests.
+arg=$1
+if [[ -n "$args" ]] && [[ "$arg" != "--vma-tests-only" ]] && [[ "$arg" != "--mm-tests-only" ]]; then
+	usage "<args> where args is either --vma-tests-only or --mm-tests-only"
+fi
+
+push_kernel_root_dir
+
+# Userland builds.
+if [[ "$arg" != "--mm-tests-only" ]]; then
+	build_run_vma_tests
+fi
+if [[ "$arg" == "--vma-tests-only" ]]; then
+	exit 0
+fi
+build_mm_tests
+
+# Kernel build.
+${script_dir}/hooks/kernel-config
+${script_dir}/hooks/kernel-build
+
+# Run the mm tests in virtme-ng.
+fail=""
+logpath="$(mktemp)"
+if ! run_mm_tests $logpath; then
+	rm $logpath
+	exit 1
+fi
