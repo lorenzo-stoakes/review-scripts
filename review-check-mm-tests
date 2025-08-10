@@ -44,7 +44,7 @@ ${script_dir}/hooks/kernel-build
 
 # check_prep put us in the root kernel directory.
 
-# Now build and run xthe userland VMA tests.
+# Now build and run the userland VMA tests.
 push tools/testing/vma
 make clean
 make -j32
