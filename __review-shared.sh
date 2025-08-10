@@ -555,7 +555,7 @@ function __run_mm_tests()
 {
 	# Execute the tests using virtme-ng. We use the overlay rwdir for some
 	# of the hugetlb tests that need access to /mnt.
-	vng --overlay-rwdir /mnt -m 2G -p 2 --cwd tools/testing/selftests/mm -- sudo ./run_vmtests.sh
+	vng --overlay-rwdir /mnt -m 4G -p 2 --cwd tools/testing/selftests/mm -- sudo ./run_vmtests.sh
 }
 
 # Execute mm tests using virtme-ng.
