@@ -533,3 +533,47 @@ function checkpatch_range()
 
 	b4 am -k -m "${mbox_path}" -v ${version}
 }
+
+function build_run_vma_tests()
+{
+	push tools/testing/vma
+	make clean
+	make -j32
+	./vma
+	pop
+}
+
+function build_mm_tests()
+{
+	push tools/testing/selftests/mm
+	make clean
+	make -j $(nproc)
+	pop
+}
+
+function __run_mm_tests()
+{
+	# Execute the tests using virtme-ng. We use the overlay rwdir for some
+	# of the hugetlb tests that need access to /mnt.
+	vng --overlay-rwdir /mnt -m 2G -p 2 --cwd tools/testing/selftests/mm -- sudo ./run_vmtests.sh
+}
+
+# Execute mm tests using virtme-ng.
+#
+# Params:
+#	$1 - path to temporary file to place log in.
+function run_mm_tests()
+{
+	local tmp_path=$1
+
+	if [[ $# -lt 1 ]]; then
+		error "run_mm_tests requires tmp_path parameter"
+	fi
+
+	if ! __run_mm_tests 2>&1 | tee $logpath; then
+		say # Add space
+		say "-- not ok output: --"
+		grep "not ok" $logpath >&2
+		exit 1
+	fi
+}

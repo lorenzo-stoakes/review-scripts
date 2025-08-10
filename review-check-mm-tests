@@ -14,13 +14,6 @@ if ! rev_exists $tag; then
 	error "review for '$name' not started"
 fi
 
-function run_mm_tests()
-{
-	# Execute the tests using virtme-ng. We use the overlay rwdir for some
-	# of the hugetlb tests that need access to /mnt.
-	vng --overlay-rwdir /mnt -m 2G -p 2 --cwd tools/testing/selftests/mm -- sudo ./run_vmtests.sh
-}
-
 tmpdir="$(get_temp_dir)"
 cleanup_dir_on_exit $tmpdir
 msgid="$(get_review_msgid $name)"
@@ -44,26 +37,17 @@ ${script_dir}/hooks/kernel-build
 
 # check_prep put us in the root kernel directory.
 
-# Now build and run the userland VMA tests.
-push tools/testing/vma
-make clean
-make -j32
-./vma
-pop
+build_run_vma_tests
+build_mm_tests
 
-# Now build the mm selftests.
-push tools/testing/selftests/mm
-make clean
-make -j $(nproc)
-pop
-
+# Run the mm tests.
+fail=""
 logpath="$tmpdir/mm-tests-$name.log"
-
-if ! run_mm_tests 2>&1 | tee $logpath; then
-	echo # Add space
-	echo "-- not ok output: --"
-	grep "not ok" $logpath
-	git checkout -q "${curr_ref}"
+if ! run_mm_tests $logpath; then
+	fail=yes
 fi
-
+rm $logpath
 git checkout -q "${curr_ref}"
+if [[ -n "$fail" ]]; then
+	exit 1
+fi
