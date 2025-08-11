@@ -11,3 +11,5 @@ if ! make -j $(nproc); then
 	show_rev_summary
 	error "BUILD FAILURE!"
 fi
+
+scripts/clang-tools/gen_compile_commands.py || true
