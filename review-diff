@@ -16,10 +16,6 @@ tmpdir="$(get_temp_dir)"
 cleanup_dir_on_exit $tmpdir
 
 mbox_path=$(retrieve_mbox $name $msgid $tmpdir quiet)
-if [[ -z ${mbox_path} ]]; then
-	error "could not retrieve mbox"
-fi
-
 curr_version="$(get_latest_revision ${mbox_path})"
 if [[ ${curr_version} -eq 1 ]]; then
 	error "v1, nothing to diff against"
