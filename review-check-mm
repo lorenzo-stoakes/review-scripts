@@ -8,8 +8,11 @@ name=$1
 version=$2
 
 # This is duplicated in review-check, but useful to get this done quickly first.
-review-checkpatch "$name" "$version"
+if ! review-checkpatch "$name" "$version"; then
+	say "checkpatch FAILED, but carrying on with other checks"
+fi
 # Check VMA tests and mm self tests pass.
 review-check-mm-tests "$name" "$version"
+
 # Check each individual patch builds correctly.
 review-check "$name" "$version"
