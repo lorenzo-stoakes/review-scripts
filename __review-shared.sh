@@ -566,7 +566,7 @@ function build_run_vma_tests()
 {
 	push tools/testing/vma
 	make clean
-	make -j32
+	make -j $(nproc)
 	./vma
 	pop
 }
