@@ -402,7 +402,7 @@ function has_review_started()
 		error "has_review_started() requires name parameter"
 	fi
 
-	tag="$(get_review_tag $name)"
+	local tag="$(get_review_tag $name)"
 
 	rev_exists $tag
 }
