@@ -455,8 +455,14 @@ function get_range_diff_params()
 	b4 diff -n -m "${prev_path}" "${curr_path}" 2>&1 | tee $tmpfile >&2
 
 	# Retrieve the final line containing the command and trim whitespace.
-	tail -n1 $tmpfile | awk '{$1=$1};1' | sed 's/git range-diff //'
+	output=$(tail -n1 $tmpfile | awk '{$1=$1};1' | sed 's/git range-diff //')
 	rm $tmpfile
+
+	if [[ $output =~ "Could" ]]; then
+		error "Unable to perform diff"
+	fi
+
+	echo $output
 }
 
 # Used to make the git range-diff command 'fancy' - customise if needed.
@@ -516,8 +522,8 @@ function review_range_diff()
 	local prev_version=$6
 	local curr_version=$7
 
-	if [[ $# -lt 5 ]]; then
-		error "range_diff() requires prev_name, prev_mbox_path, curr_mbox_path, tmpdir, prev_version, curr_version parameters"
+	if [[ $# -lt 7 ]]; then
+		error "range_diff() requires prev_name, curr_name, prev_mbox_path, curr_mbox_path, tmpdir, prev_version, curr_version parameters"
 	fi
 
 	local prev_branch=$(get_review_branch $prev_name $prev_version)
