@@ -313,23 +313,25 @@ function shazam_at_version()
 	local mbox_path=$2
 	local ver=$3
 
-	if [[ $# -lt 2 ]]; then
-		error "shazam_at_version() requires mbox path, version parameters"
+	if [[ $# -lt 3 ]]; then
+		error "shazam_at_version() requires prev_rev, mbox path, version parameters"
 	fi
 
-	# Bizarrely, b4 will happily fail to get the version you ask for
+	# b4 doesn't give an exit status
 	# and... not return an error code. Let's pipe its output into a
 	# temporary file so we can figure out if this happens.
 	tmpfile=$(mktemp)
 
 	# Highly recommended to set am.threeWay for this.
 
+	say "--- apply patches for [$name] at version [$ver]..."
 	if ! b4 shazam -m "${mbox_path}" -v $ver 2>&1 | tee $tmpfile >&2; then
 		echo >&2 # Extra line to separate out from noise.
 		warn "shazam failed, if due to conflict, please resolve and re-run command"
 		rm $tmpfile
 		exit 1
 	fi
+	say "--- ...apply patches for [$name] at version [$ver]"
 
 	# Anyway this at least means we can ignore these cases.
 	if grep -q "Unable to find revision" $tmpfile; then
