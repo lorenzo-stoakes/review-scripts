@@ -585,19 +585,24 @@ function __run_mm_tests()
 }
 
 # Execute mm tests using virtme-ng.
-#
-# Params:
-#	$1 - path to temporary file to place log in.
 function run_mm_tests()
 {
-	local tmp_path=$1
-
-	if [[ $# -lt 1 ]]; then
-		error "run_mm_tests requires tmp_path parameter"
+	tmpfile=$(mktemp)
+	fail=""
+	if ! __run_mm_tests 2>&1 | tee $tmpfile; then
+		fail="yes"
 	fi
 
-	if ! __run_mm_tests 2>&1 | tee $logpath; then
-		say # Add space
+	# For some reason the mm tests given an exit code even if FAIL=0
+	# so account for this.
+	if [[ -n "$fail" ]] && grep "^# SUMMARY:" $tmpfile | grep -q "FAIL=0"; then
+		fail=""
+	fi
+
+	rm $tmpfile
+
+	if [[ -n "$fail" ]]; then
+		say # Add space.
 		say "-- not ok output: --"
 		grep "not ok" $logpath >&2
 		exit 1

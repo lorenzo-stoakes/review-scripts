@@ -42,11 +42,9 @@ build_mm_tests
 
 # Run the mm tests.
 fail=""
-logpath="$tmpdir/mm-tests-$name.log"
-if ! run_mm_tests $logpath; then
+if ! run_mm_tests; then
 	fail=yes
 fi
-rm $logpath
 git checkout -q "${curr_ref}"
 if [[ -n "$fail" ]]; then
 	exit 1
