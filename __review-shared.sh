@@ -209,7 +209,7 @@ function get_mbox_filename()
 # Params:
 #	$1 - the name given to this review.
 #	$2 - msgid to retrieve.
-#	$3 - tmpdir to put it in.
+#	$3 - dir to put it in.
 #	$4 - try to be vaguely quiet (optional).
 #
 # Outputs path to mbox on exit.
@@ -217,11 +217,11 @@ function retrieve_mbox()
 {
 	local name="$1"
 	local msgid=$2
-	local tmpdir=$3
+	local dir=$3
 	local quiet=$4
 
 	if [[ $# -lt 3 ]]; then
-		error "get_mbox() requires name, msgid, tmpdir parameters"
+		error "get_mbox() requires name, msgid, dir parameters"
 	fi
 
 	local mbox_filename="$(get_mbox_filename $name)"
@@ -229,16 +229,16 @@ function retrieve_mbox()
 	# It's noisy anyway, so add prefix/suffix.
 	if [[ -z "$quiet" ]]; then
 		echo "--- retrieving data for [$name]... ---" >&2
-		b4 mbox -c $msgid -o $tmpdir -n ${mbox_filename}
+		b4 mbox -c $msgid -o $dir -n ${mbox_filename}
 	else
-		b4 -q mbox -c  $msgid -o $tmpdir -n ${mbox_filename}
+		b4 -q mbox -c  $msgid -o $dir -n ${mbox_filename}
 	fi
 
 	if [[ -z "$quiet" ]]; then
 		echo "--- ...retrieving data for [$name] ---" >&2
 	fi
 
-	echo "$tmpdir/${mbox_filename}"
+	echo "$dir/${mbox_filename}"
 }
 
 __latest_revision_regex="\[PATCH.+\]|\[PATCH RFC.+\]|\[RFC PATCH.+\]|\[RFC.+\]"
