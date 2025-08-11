@@ -91,6 +91,10 @@ diff comparisons.
   to host file system. Some tests won't work if you dont' do this, so don't
   blame me if your filesystem breaks.
 
+* `review-check-mm [name] <version>` - Execute _all_ checks for mm series, from
+  easiest checks to hardest, so a checkpatch check first, then self tests check,
+  then individual per-patch build test.
+
 * `review-mm-tests <--vma-tests-only> <--mm-tests-only>` - Build/run VMA tests
   and/or memory management self tests, but _no review has to be active_, this
   will simply be run against the current kernel tree for convenience.
