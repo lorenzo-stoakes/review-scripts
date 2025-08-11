@@ -88,7 +88,7 @@ diff comparisons.
 * `review-check-mm-tests [name] <version>` - Build series at specified version
   or if not specified, the latest, compile the mm self tests and then run them
   in this kernel version. **WARNING:** this runs with sudo and R/W with access
-  to host file system. Some tests won't work if you dont' do this, so don't
+  to host file system. Some tests won't work if you don't do this, so don't
   blame me if your filesystem breaks.
 
 * `review-check-mm [name] <version>` - Execute _all_ checks for mm series, from
