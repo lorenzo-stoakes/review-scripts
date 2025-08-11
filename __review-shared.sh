@@ -241,6 +241,8 @@ function retrieve_mbox()
 	echo "$tmpdir/${mbox_filename}"
 }
 
+__latest_revision_regex="\[PATCH.+\]|\[PATCH RFC.+\]|\[RFC PATCH.+\]|\[RFC.+\]"
+
 function __get_latest_revision()
 {
 	local mbox_path=$1
@@ -248,9 +250,9 @@ function __get_latest_revision()
 	# The below won't retrieve v1, so we must wrap this operation.
 
 	# A bit horrible, but does the job...
-	grep -Ei "\[.*PATCH.*\]|\[.*RFC.*\]" "${mbox_path}" | \
-		grep -Eo 'v[0-9]+' | \
-		sed -nE 's/v([0-9]+)/\1/p' | \
+	grep -Ei "$__latest_revision_regex" ${mbox_path} | \
+		grep -Eio 'v[0-9]+' | \
+		sed -nE 's/v([0-9]+)/\1/pi' | \
 		sort -nr | \
 		head -n1
 }
@@ -272,7 +274,7 @@ function get_latest_revision()
 	revision="$(__get_latest_revision ${mbox_path})"
 	if [[ -z "$revision" ]]; then
 		# OK this could be v1.
-		if grep -Eqi "\[PATCH.+\]|\[PATCH RFC.+\]|\[RFC PATCH.+\]|\[RFC.+\]" "${mbox_path}"; then
+		if grep -Eqi "${__latest_revision_regex}" "${mbox_path}"; then
 			revision=1
 		else
 			error "Cannot determine revision in '${mbox_path}'"
