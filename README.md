@@ -75,6 +75,9 @@ diff comparisons.
   version>` - Same as review-diff, except it's comparing ranges across separate
   reviews. Useful for series that b4 loses track of, or RFC -> non-RFC, etc.
 
+* `review-diff-each [name] <version>` - Review each individual patch in the
+  series at the specified version (or latest if not specified) using `git show`.
+
 * `review-read [name]` - Retrieve the mail for all versions of the series and
   all replies, and load it in neomutt.
 
@@ -105,6 +108,7 @@ diff comparisons.
 * `review-patches [name] <version>` - Retrieves all the patches in the series
   and saves them locally as a series of *.patch files (minus the cover patch),
   optionally at the specified version, if not specified then the latest.
+
 
 ## Credit
 
