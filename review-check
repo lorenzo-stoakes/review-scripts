@@ -46,6 +46,6 @@ git checkout -q $to
 git rebase --exec ${script_dir}/hooks/kernel-build $from
 git checkout -q "${curr_ref}"
 
-echo "All commits built OK."
+echo "---- ALL PATCHES BUILT OK ---- :)"
 
 checkpatch_range "${mbox_path}" $version
