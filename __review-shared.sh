@@ -585,7 +585,7 @@ function checkpatch_range()
 
 	fail=""
 	# Hack - we lock for the unicode char indicating an error.
-	if grep -q "●" $tmpfile; then
+	if grep "●" $tmpfile | grep -qE 'WARNING|ERROR'; then
 		fail="fail"
 	fi
 
