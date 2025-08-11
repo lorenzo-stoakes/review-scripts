@@ -533,7 +533,7 @@ function checkpatch_range()
 		error "checkpatch_range requires mbox_path, version parameters"
 	fi
 
-	b4 am -k -m "${mbox_path}" -v ${version}
+	b4 am -k -m "${mbox_path}" -v ${version} -o - >/dev/null
 }
 
 function build_run_vma_tests()
