@@ -520,6 +520,16 @@ function review_range_diff()
 		error "range_diff() requires prev_name, prev_mbox_path, curr_mbox_path, tmpdir, prev_version, curr_version parameters"
 	fi
 
+	local prev_branch=$(get_review_branch $prev_name $prev_version)
+	if ! rev_exists $prev_branch; then
+		error "Cannot find branch '${prev_branch}' for '${prev_name}' at version ${prev_version}"
+	fi
+
+	local curr_branch=$(get_review_branch $curr_name $curr_version)
+	if ! rev_exists $curr_branch; then
+		error "Cannot find branch '${curr_branch}' for '${curr_name}' at version ${curr_version}"
+	fi
+
 	local prev_filename="review-${prev_name}-v${prev_version}.mbx"
 	local curr_filename="review-${curr_name}-v${curr_version}.mbx"
 
