@@ -537,7 +537,27 @@ function checkpatch_range()
 		error "checkpatch_range requires mbox_path, version parameters"
 	fi
 
-	b4 am -k -m "${mbox_path}" -v ${version} -o - >/dev/null
+	# b4 won't return an error if checkpatch fails, so we have to manually
+	# pick this up, so put stderr into temporary logfile for us to grep.
+	tmpfile=$(mktemp)
+
+	if ! b4 am -k -m "${mbox_path}" -v ${version} -o - 2>&1 >/dev/null | tee $tmpfile >&2; then
+		rm $tmpfile
+		exit 1
+	fi
+
+	fail=""
+	# Hack - we lock for the unicode char indicating an error.
+	if grep -q "●" $tmpfile; then
+		fail="fail"
+	fi
+
+	rm $tmpfile
+	if [[ -n "$fail" ]]; then
+		exit 1
+	else
+		exit 0
+	fi
 }
 
 function build_run_vma_tests()
