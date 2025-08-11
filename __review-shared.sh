@@ -421,6 +421,10 @@ function extract_version_mbox()
 	local filename=$3
 	local version=$4
 
+	if [[ $# -lt 4 ]]; then
+		error "extract_version_mbox() requires mbox_path, dir, filename, version parameters"
+	fi
+
 	b4 -q am -m "${mbox_path}" -o "$dir" -n "${filename}" -v $version
 
 	echo "$dir/$filename"
@@ -578,4 +582,38 @@ function run_mm_tests()
 		grep "not ok" $logpath >&2
 		exit 1
 	fi
+}
+
+# Extract patches from an mbox from a larger mbox at a specific version.
+#
+# Params:
+# 	$1 - larger mbox path.
+#	$2 - directory to place files in.
+#	$3 - temporary directory to extract to.
+#	$4 - version to extract.
+#
+# Outputs the path of the mbox file.
+function extract_mbox_patches()
+{
+	local mbox_path=$1
+	local dir=$2
+	local tmpdir=$3
+	local version=$4
+
+	if [[ $# -lt 4 ]]; then
+		error "extract_mbox_patches() requires mbox_path, dir, tmpdir, version parameters"
+	fi
+
+	say "--- retrieving patches for [$name]..."
+	b4 -q am -M -m "${mbox_path}" -o "$tmpdir" -n "mail" -v $version --no-cover
+	say "--- ...retrieving patches for [$name]"
+
+	mailpath="$tmpdir/mail.maildir"
+	for file in $mailpath/new/*.eml; do
+		mv "$file" "$dir/$(basename ${file%.eml}).patch"
+	done
+	rmdir $mailpath/new
+	rmdir $mailpath/cur
+	rmdir $mailpath/tmp
+	rmdir $mailpath
 }

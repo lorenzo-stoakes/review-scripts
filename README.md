@@ -95,6 +95,13 @@ diff comparisons.
   and/or memory management self tests, but _no review has to be active_, this
   will simply be run against the current kernel tree for convenience.
 
+* `review-mbox [name]` - Retrieves an mbox of all mails associated with series,
+  and saves it into the local directory as `review_[name].mbx`.
+
+* `review-patches [name] <version>` - Retrieves all the patches in the series
+  and saves them locally as a series of *.patch files (minus the cover patch),
+  optionally at the specified version, if not specified then the latest.
+
 ## Credit
 
 Thanks to [Tomáš Janoušek](https://genserver.social/users/liskin) for his

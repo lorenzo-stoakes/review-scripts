@@ -1,0 +1,19 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+if [[ $# -lt 1 ]]; then
+	error "usage: $(basename $0) [name]"
+fi
+name=$1
+
+check_prep
+
+tag="$(get_review_tag $name)"
+if ! rev_exists $tag; then
+	error "review for '$name' not started"
+fi
+
+msgid="$(get_review_msgid $name)"
+mbox_path=$(retrieve_mbox $name $msgid .)
+
+echo "Saved mbox to '${mbox_path}'"
