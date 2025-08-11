@@ -427,7 +427,9 @@ function extract_version_mbox()
 		error "extract_version_mbox() requires mbox_path, dir, filename, version parameters"
 	fi
 
+	say "--- extracting mbox at version [$version]..."
 	b4 -q am -m "${mbox_path}" -o "$dir" -n "${filename}" -v $version
+	say "--- ..extracting mbox at version [$version]"
 
 	echo "$dir/$filename"
 }
@@ -459,10 +461,10 @@ function get_range_diff_params()
 	rm $tmpfile
 
 	if [[ $output =~ "Could" ]]; then
-		error "Unable to perform diff"
+		echo ""
+	else
+		echo $output
 	fi
-
-	echo $output
 }
 
 # Used to make the git range-diff command 'fancy' - customise if needed.
@@ -485,7 +487,7 @@ function __fancy_range_diff()
 # Params:
 #	$1 - the path of the mbox containing the previous version.
 #	$2 - the path of the mbox containing the current version.
-function fancy_range_diff()
+function fancy_range_diff_b4()
 {
 	local prev_path=$1
 	local curr_path=$2
@@ -497,8 +499,13 @@ function fancy_range_diff()
 	# We have to hack a bit here - we can't tell b4 to use a specific pager,
 	# so instead get it to tell us the git range-diff command, which we
 	# extract then adjust to do what we want.
-	params=$(get_range_diff_params "${prev_path}" "${curr_path}")
-	__fancy_range_diff $params
+	local params=$(get_range_diff_params "${prev_path}" "${curr_path}")
+
+	if [[ -n "$params" ]]; then
+		__fancy_range_diff $params
+	else
+		return 1
+	fi
 }
 
 # Perform a ranged diff across two separate larger mboxes at different versions.
@@ -543,7 +550,19 @@ function review_range_diff()
 	local prev_path=$(extract_version_mbox "${prev_mbox_path}" "$tmpdir" "${prev_filename}" "${prev_version}")
 	local curr_path=$(extract_version_mbox "${curr_mbox_path}" "$tmpdir" "${curr_filename}" "${curr_version}")
 
-	fancy_range_diff "${prev_path}" "${curr_path}"
+	if ! fancy_range_diff_b4 "${prev_path}" "${curr_path}"; then
+		warn "Unable to use b4 diff to perform range-diff, trying to use local review branches"
+
+		local prev_tag="$(get_review_tag ${prev_name})"
+		local curr_tag="$(get_review_tag ${curr_name})"
+		local prev_hash="$(get_ref_hash $prev_tag)"
+		local curr_hash="$(get_ref_hash $prev_tag)"
+		if [[ "$prev_hash" != "$curr_hash" ]]; then
+			warn "bases differ, this may be broken"
+		fi
+
+		__fancy_range_diff ${prev_tag}..${prev_branch} ${curr_tag}..${curr_branch}
+	fi
 }
 
 function checkpatch_range()
