@@ -75,15 +75,15 @@ diff comparisons.
   version>` - Same as review-diff, except it's comparing ranges across separate
   reviews. Useful for series that b4 loses track of, or RFC -> non-RFC, etc.
 
+* `review-read [name]` - Retrieve the mail for all versions of the series and
+  all replies, and load it in neomutt.
+
+* `review-checkpatch [name] <version>` - Just run `checkpatch.pl` against all
+  patches in series.
+
 * `review-check [name] <version>` - Build each patch. Defaults to the latest
   version, unless specified. Afterwards this runs `checkpatch.pl` against each
   patch.
-
-* `review-check [name] <version>` - Just run `checkpatch.pl` against all patches
-  in series.
-
-* `review-read [name]` - Retrieve the mail for all versions of the series and
-  all replies, and load it in neomutt.
 
 * `review-check-mm-tests [name] <version>` - Build series at specified version
   or if not specified, the latest, compile the mm self tests and then run them
