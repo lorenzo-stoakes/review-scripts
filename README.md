@@ -112,6 +112,9 @@ diff comparisons.
 * `review-build` - Simple script to configure and build the kernel using the
   configuration/build hooks.
 
+* `review-config` - Simple script to configure the kernel using the
+  configuration hook.
+
 ## Credit
 
 Thanks to [Tomáš Janoušek](https://genserver.social/users/liskin) for his
