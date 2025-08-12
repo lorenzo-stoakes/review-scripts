@@ -109,6 +109,8 @@ diff comparisons.
   and saves them locally as a series of *.patch files (minus the cover patch),
   optionally at the specified version, if not specified then the latest.
 
+* `review-build` - Simple script to configure and build the kernel using the
+  configuration/build hooks.
 
 ## Credit
 
