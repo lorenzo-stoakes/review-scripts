@@ -11,10 +11,10 @@ curr_version=$4
 
 check_prep
 if ! has_review_started ${prev_name}; then
-	warn "review for '${prev_name}' not started"
+	error "review for '${prev_name}' not started"
 fi
-if ! has_review_started $curr_name; then
-	warn "review for '${curr_name}' not started"
+if ! has_review_started ${curr_name}; then
+	error "review for '${curr_name}' not started"
 fi
 
 tmpdir="$(get_temp_dir)"
