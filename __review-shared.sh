@@ -95,7 +95,7 @@ function ref_to_maybe_branch()
 
 function get_curr_ref()
 {
-	get_ref HEAD
+	ref_to_maybe_branch HEAD
 }
 
 function show_rev_summary()
