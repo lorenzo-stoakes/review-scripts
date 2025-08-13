@@ -38,3 +38,6 @@ git checkout -qb $branch
 
 # Restore prior ref.
 git checkout "${curr_ref}"
+
+# Now get everything else we can.
+review-get $name
