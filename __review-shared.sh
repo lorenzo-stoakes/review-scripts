@@ -40,9 +40,20 @@ function tree_clean()
 	git diff-index --quiet HEAD --
 }
 
+function get_ref()
+{
+	local ref=$1
+
+	if [[ $# -lt 1 ]]; then
+		error "get_ref() requires ref parameter"
+	fi
+
+	git rev-parse --abbrev-ref $ref
+}
+
 function get_curr_ref()
 {
-	git rev-parse --abbrev-ref HEAD
+	get_ref HEAD
 }
 
 function get_ref_hash()
