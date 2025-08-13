@@ -51,6 +51,42 @@ function get_ref()
 	git rev-parse --abbrev-ref $ref
 }
 
+function get_branch_at_tag()
+{
+	local tag=$1
+
+	if [[ $# -lt 1 ]]; then
+		error "$FUNCNAME() requires tag parameter"
+	fi
+
+	# The points-at gets the tag, then dereferences the tag to a commit hash
+	# with ^{commit}, then looks up the branch in refs/heads/.
+	git for-each-ref --format='%(refname:short)' \
+	    --points-at "refs/tags/$tag^{commit}" refs/heads/ | head -1
+}
+
+# Look up a branch name from a specified tag. If one exists there, output that,
+# otherwise output the tag.
+#
+# Params:
+#	$1 - tag name.
+function tag_to_maybe_branch()
+{
+	local tag=$1
+
+	if [[ $# -lt 1 ]]; then
+		error "$FUNCNAME() requires tag parameter"
+	fi
+
+	branch=$(get_branch_at_tag $tag)
+
+	if [[ -n "$branch" ]]; then
+		echo $branch
+	else
+		echo $tag
+	fi
+}
+
 function get_curr_ref()
 {
 	get_ref HEAD
@@ -381,9 +417,10 @@ function clear_review_branches()
 	local name=$1
 	local return_branch=$2
 
-	if [[ $# -lt 1 ]]; then
-		error "clear_review_branches() requires name parameter"
+	if [[ $# -lt 2 ]]; then
+		error "clear_review_branches() requires name, return_branch parameters"
 	fi
+	return_branch="$(tag_to_maybe_branch $return_branch)"
 
 	local branches="$(get_review_branches $name)"
 
