@@ -62,7 +62,7 @@ function get_branch_at_tag()
 	# The points-at gets the tag, then dereferences the tag to a commit hash
 	# with ^{commit}, then looks up the branch in refs/heads/.
 	git for-each-ref --format='%(refname:short)' \
-	    --points-at "refs/tags/$tag^{commit}" refs/heads/ | head -1
+	    --points-at "refs/tags/$tag^{commit}" refs/heads/ 2>/dev/null | head -1
 }
 
 # Look up a branch name from a specified tag. If one exists there, output that,
