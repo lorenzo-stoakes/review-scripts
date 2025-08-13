@@ -17,7 +17,7 @@ It will also create branches of the form `review/[name]-[version]`. Use
 ## Dependencies
 
 * usual coreutils etc.
-* git (obviously)
+* git (>= v2.45)
 * b4
 * git-delta
 * virtme-ng
@@ -114,6 +114,29 @@ diff comparisons.
 
 * `review-config` - Simple script to configure the kernel using the
   configuration hook.
+
+* `review-rebase [name] [new_base] <version>` - Rebase the review branch on to
+  new_base, either at the specified version, or if not specified the latest. See
+  `review-rebase-branch` for further details.
+
+* `review-rebase-branch [branch] [old_base] [new_base] <nopause>` - Rebase
+  `branch` from `old_base` to `new_base`. This assumes you're dealing with an
+  often-rebased repo (which kernel development repos/branches often are), so
+  tries to do this with a cherry-pick. Since conflicts can arise, we have 2 ways
+  of dealing with it - manually, where an error message indicates user can
+  manually give up on it (see `review-rebase-abort`) or continue applying steps
+  after cherry-pick resolutions applied (see
+  `review-rebase-continue`). Alternatively, if able to (`nopause` param is
+  unset), the script will pause and allow resolution in the background, and can
+  be resumed via `fg`.
+
+* `review-rebase-abort [branch] [old_base] [new_base]` - Aborts an ongoing
+  cherry-pick rebase started by `review-rebase` or `review-rebase-branch` -
+  cleaning up the mess created.
+
+* `review-rebase-continue [branch] [old_base] [new_base]` - Continues an ongoing
+  cherry-pick rebase started by `review-rebase` or `review-rebase-branch` -
+  performing the final steps to apply the rebase.
 
 ## Credit
 

@@ -1,0 +1,34 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+if [[ $# -lt 2 ]]; then
+	error "usage: $(basename $0) [name] [new_base] <version>"
+fi
+name=$1
+new_base=$2
+version=$3
+
+check_prep
+
+tag="$(get_review_tag $name)"
+if ! rev_exists $tag; then
+	error "review for '$name' not started"
+fi
+
+# If no version specified, figure out latest.
+if [[ -z "$version" ]]; then
+	tmpdir="$(get_temp_dir)"
+	cleanup_dir_on_exit $tmpdir
+	msgid="$(get_review_msgid $name)"
+	mbox_path=$(retrieve_mbox $name $msgid $tmpdir)
+
+	version="$(get_latest_revision ${mbox_path})"
+fi
+
+branch="$(get_review_branch $name $version)"
+if ! rev_exists $branch; then
+	error "cannot find branch '$branch'"
+fi
+
+# Defer heavy lifting to this.
+review-rebase-branch $branch $tag $new_base nopause

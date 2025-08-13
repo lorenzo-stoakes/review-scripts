@@ -1,0 +1,26 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+if [[ $# -lt 3 ]]; then
+	error "usage: $(basename $0) [branch] [old_base] [new_base]"
+fi
+branch=$1
+old_base=$2
+new_base=$3
+
+# Clear state first.
+git cherry-pick --abort || true
+
+check_prep
+
+tmp_branch="${old_base}-tmp"
+
+# If we're currently on the target branch, this will fail, so jump to know good
+# point - the new base.
+if [[ "$branch" =~ "$(get_curr_ref)" ]] || [[ "${tmp_branch}" =~ "$(get_curr_ref)" ]]; then
+	git checkout -q $(get_ref "${new_base}")
+fi
+
+if rev_exists ${tmp_branch}; then
+	git branch -qD ${tmp_branch}
+fi

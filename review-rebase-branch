@@ -1,0 +1,52 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+if [[ $# -lt 3 ]]; then
+	error "usage: $(basename $0) <branch> <old_base> <new_base> <nopause>"
+fi
+branch=$1
+old_base=$2
+new_base=$3
+nopause=$4
+
+check_prep
+
+if ! rev_exists $branch; then
+	error "Branch '$branch' not found"
+fi
+if ! rev_exists ${old_base}; then
+	error "Old base '${old_base}' not found"
+fi
+if ! rev_exists ${new_base}; then
+	error "Base '${new_base}' not found"
+fi
+
+tmp_branch="${old_base}-tmp"
+if rev_exists ${tmp_branch}; then
+	error "Temporary branch '${tmp_branch} already exists"
+fi
+
+curr_ref="$(get_curr_ref)"
+
+# attempt to cherry-pick previous series from old_base..branch onto new_base, as we
+# assume we are dealing with an often-rebase repo where git-rebase is simply
+# not going to work.
+git checkout -q ${new_base}
+git checkout -qb ${tmp_branch}
+
+# Force skip of (what will end up being) empty commits.
+# Requires git >= 2.45.
+if ! git cherry-pick --empty=drop ${old_base}..${branch}; then
+	if [[ -n "$nopause" ]]; then
+		error "Conflicts detected, resolve and run\n" \
+		      "TO CONTINUE: review-rebase-continue $branch ${old_base} ${new_base}\n" \
+		      "   TO ABORT: review-rebase-abort $branch ${old_base} ${new_base}"
+	else
+		warn "Script PAUSED, resolve conflicts and run 'fg' to continue."
+		kill -TSTP $$
+	fi
+fi
+git branch -qD $branch
+git branch -mv ${tmp_branch} $branch
+
+git checkout -q ${curr_ref}

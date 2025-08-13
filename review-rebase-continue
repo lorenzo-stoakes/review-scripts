@@ -1,0 +1,34 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+if [[ $# -lt 3 ]]; then
+	error "usage: $(basename $0) [branch] [old_base] [new_base]"
+fi
+branch=$1
+old_base=$2
+new_base=$3
+
+check_prep
+
+if ! rev_exists $branch; then
+	error "Branch '$branch' not found"
+fi
+if ! rev_exists ${old_base}; then
+	error "Old base '${old_base}' not found"
+fi
+if ! rev_exists ${new_base}; then
+	error "Base '${new_base}' not found"
+fi
+tmp_branch="${old_base}-tmp"
+if !rev_exists ${tmp_branch}; then
+	error "Temporary branch '${tmp_branch} not found"
+fi
+
+# If we're currently on the target branch, this will fail, so jump to know good
+# point - the new base.
+if [[ "$branch" =~ "$(get_curr_ref)" ]]; then
+	git checkout -q $(get_ref "new_base")
+fi
+
+git branch -qD $branch
+git branch -mv ${tmp_branch} $branch
