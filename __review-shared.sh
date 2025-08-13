@@ -6,7 +6,7 @@ script_dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 function say()
 {
-	echo "$@" >&2
+	echo -e "$@" >&2
 }
 
 function fatal()
@@ -17,12 +17,12 @@ function fatal()
 
 function error()
 {
-	fatal "ERROR: $@."
+	fatal "ERROR: $@"
 }
 
 function warn()
 {
-	say "WARNING: $@."
+	say "WARNING: $@"
 }
 
 function usage()
