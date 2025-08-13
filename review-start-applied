@@ -30,7 +30,7 @@ fi
 
 curr_ref="$(get_curr_ref)"
 
-git checkout -q ${base_ref}
+git checkout -q ${base_ref}~1
 git tag $tag -m "$msgid"
 
 git checkout -q ${head_ref}
