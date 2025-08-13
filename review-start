@@ -19,6 +19,9 @@ if rev_exists $tag; then
 	error "review for '$name' already begun"
 fi
 
+# Do we see this msgid recently applied in tree? Error out if so.
+check_already_applied $msgid
+
 # We tag early so we don't have any issues with trying again on a broken get.
 git checkout -q $head
 git tag $tag -m "$msgid"

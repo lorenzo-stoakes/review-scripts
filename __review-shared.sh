@@ -727,3 +727,19 @@ function extract_mbox_patches()
 	rmdir $mailpath/tmp
 	rmdir $mailpath
 }
+
+function check_already_applied()
+{
+	local msgid=$1
+
+	if [[ $# -lt 1 ]]; then
+		error "$FUNCNAME requires msgid parameter"
+	fi
+
+	found=$(git --no-pager log --oneline HEAD~1000..HEAD --grep="$msgid" -n1)
+
+	if [[ -n "$found" ]]; then
+		say "$found"
+		error "Found specified msgid in tree, run review-start-applied instead"
+	fi
+}
