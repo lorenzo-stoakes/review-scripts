@@ -2,7 +2,7 @@
 set -e; set -o pipefail; source __review-shared.sh
 
 if [[ $# -lt 3 ]]; then
-	error "usage: $(basename $0) <branch> <old_base> <new_base> <nopause>"
+	error "usage: $(basename $0) [branch] [old_base] [new_base] <nopause>"
 fi
 branch=$1
 old_base=$2
