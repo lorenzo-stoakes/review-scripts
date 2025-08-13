@@ -57,6 +57,11 @@ diff comparisons.
   that exists in lore for a message in one of the revisions you intend to
   review. Runs `review-get` on startup to setup review branches.
 
+* `review-start-applied [name] [base ref] [head ref] [msgid] [version]` -
+  Manually start a review where the series has already been applied and exists
+  in the tree, from `base ref` to `head ref` at version `version`. From there
+  you can use the rest of the review tools as if it were obtained normally.
+
 * `review-get [name]` - Retrieves latest messages for all revisions and updates
   local branches, placing them in `review/name-vN` braanches.
 

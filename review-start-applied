@@ -1,0 +1,40 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+if [[ $# -lt 5 ]]; then
+	usage "[name] [base ref] [head ref] [msgid] [version]"
+fi
+name=$1
+base_ref=$2
+head_ref=$3
+msgid=$4
+version=$5
+
+check_prep
+
+if ! rev_exists ${base_ref}; then
+	error "Base ref ${base_ref} doesn't exist"
+fi
+if ! rev_exists ${head_ref}; then
+	error "Head ref ${head_ref} doesn't exist"
+fi
+
+tag="$(get_review_tag $name)"
+if rev_exists $tag; then
+	error "review for '$name' already begun"
+fi
+branch="$(get_review_branch $name $version)"
+if rev_exists $branch; then
+	error "branch '$branch' for '$name' exists"
+fi
+
+curr_ref="$(get_curr_ref)"
+
+git checkout -q ${base_ref}
+git tag $tag -m "$msgid"
+
+git checkout -q ${head_ref}
+git checkout -qb $branch
+
+# Restore prior ref.
+git checkout "${curr_ref}"
