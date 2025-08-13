@@ -11,13 +11,7 @@ check_prep
 
 tag="$(get_review_tag $name)"
 if ! rev_exists $tag; then
-	msg="review for '$name' not started"
-
-	if [[ -n "$warn" ]]; then
-		warn $msg
-		exit 1
-	fi
-	error $msg
+	error "review for '$name' not started"
 fi
 
 git tag -d $tag >/dev/null
