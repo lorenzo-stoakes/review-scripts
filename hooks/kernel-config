@@ -5,4 +5,6 @@ vng --kconfig --config ${script_dir}/hooks/extra_config 2>/dev/null
 # For some reason, vng won't set these.
 scripts/config -e ext4_fs
 scripts/config -e ext4_use_for_ext2
+scripts/config -d werror
+
 make olddefconfig
