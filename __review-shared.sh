@@ -45,7 +45,7 @@ function get_ref()
 	local ref=$1
 
 	if [[ $# -lt 1 ]]; then
-		error "get_ref() requires ref parameter"
+		error "$FUNCNAME() requires ref parameter"
 	fi
 
 	git rev-parse --abbrev-ref $ref
@@ -112,7 +112,7 @@ function get_tag_msg()
 	local tag=$1
 
 	if [[ $# -lt 1 ]]; then
-		error "get_tag_msg() requires tag parameter"
+		error "$FUNCNAME() requires tag parameter"
 	fi
 
 	git tag -ln $tag | awk '{print $2}'
@@ -189,7 +189,7 @@ function cleanup_dir_on_exit()
 	local dir=$1
 
 	if [[ $# -lt 1 ]]; then
-		error "cleanup_dir_on_exit() requires dir parameter"
+		error "$FUNCNAME() requires dir parameter"
 	fi
 
 	if [[ -z "$dir" ]]; then
@@ -214,7 +214,7 @@ function get_review_tag()
 	local name=$1
 
 	if [[ $# -lt 1 ]]; then
-		error "get_review_base_tagname() requires name parameter"
+		error "$FUNCNAME() requires name parameter"
 	fi
 
 	echo "review-$name-base"
@@ -229,7 +229,7 @@ function get_review_msgid()
 	local name=$1
 
 	if [[ $# -lt 1 ]]; then
-		error "get_review_msgid() requires name parameter"
+		error "$FUNCNAME() requires name parameter"
 	fi
 
 	local tag="$(get_review_tag $name)"
@@ -245,7 +245,7 @@ function get_mbox_filename()
 	local name=$1
 
 	if [[ $# -lt 1 ]]; then
-		error "get_mbox_filename() requires name parameter"
+		error "$FUNCNAME() requires name parameter"
 	fi
 
 	echo "review-$name.mbx"
@@ -269,7 +269,7 @@ function retrieve_mbox()
 	local quiet=$4
 
 	if [[ $# -lt 3 ]]; then
-		error "get_mbox() requires name, msgid, dir parameters"
+		error "$FUNCNAME() requires name, msgid, dir parameters"
 	fi
 
 	local mbox_filename="$(get_mbox_filename $name)"
@@ -316,7 +316,7 @@ function get_latest_revision()
 	local mbox_path=$1
 
 	if [[ $# -lt 1 ]]; then
-		error "get_latest_revision() requires mbox path"
+		error "$FUNCNAME() requires mbox path"
 	fi
 
 	revision="$(__get_latest_revision ${mbox_path})"
@@ -343,7 +343,7 @@ function get_review_branch()
 	local ver=$2
 
 	if [[ $# -lt 2 ]]; then
-		error "get_review_branch() requires name, version parameters"
+		error "$FUNCNAME() requires name, version parameters"
 	fi
 
 	echo "review/$name-v$ver"
@@ -362,7 +362,7 @@ function shazam_at_version()
 	local ver=$3
 
 	if [[ $# -lt 3 ]]; then
-		error "shazam_at_version() requires prev_rev, mbox path, version parameters"
+		error "$FUNCNAME() requires prev_rev, mbox path, version parameters"
 	fi
 
 	# b4 doesn't give an exit status
@@ -401,7 +401,7 @@ function get_review_branches()
 	local name=$1
 
 	if [[ $# -lt 1 ]]; then
-		error "get_review_branches() requires name parameter"
+		error "$FUNCNAME() requires name parameter"
 	fi
 
 	git for-each-ref --format='%(refname:short)' refs/heads/ | \
@@ -419,7 +419,7 @@ function clear_review_branches()
 	local return_branch=$2
 
 	if [[ $# -lt 2 ]]; then
-		error "clear_review_branches() requires name, return_branch parameters"
+		error "$FUNCNAME() requires name, return_branch parameters"
 	fi
 	return_branch="$(ref_to_maybe_branch $return_branch)"
 
@@ -447,7 +447,7 @@ function has_review_started()
 	local name=$1
 
 	if [[ $# -lt 1 ]]; then
-		error "has_review_started() requires name parameter"
+		error "$FUNCNAME() requires name parameter"
 	fi
 
 	local tag="$(get_review_tag $name)"
@@ -472,7 +472,7 @@ function extract_version_mbox()
 	local version=$4
 
 	if [[ $# -lt 4 ]]; then
-		error "extract_version_mbox() requires mbox_path, dir, filename, version parameters"
+		error "$FUNCNAME() requires mbox_path, dir, filename, version parameters"
 	fi
 
 	say "--- extracting mbox at version [$version]..."
@@ -496,7 +496,7 @@ function get_range_diff_params()
 	local curr_path=$2
 
 	if [[ $# -lt 2 ]]; then
-		error "get_range_diff_params() requires prev_path, curr_path parameters"
+		error "$FUNCNAME() requires prev_path, curr_path parameters"
 	fi
 
 	# b4 outputs this to stderr so have to fiddle around here. We use tee as
@@ -541,7 +541,7 @@ function fancy_range_diff_b4()
 	local curr_path=$2
 
 	if [[ $# -lt 2 ]]; then
-		error "fancy_range_diff() requires prev_path, curr_path parameters"
+		error "$FUNCNAME() requires prev_path, curr_path parameters"
 	fi
 
 	# We have to hack a bit here - we can't tell b4 to use a specific pager,
@@ -578,7 +578,7 @@ function review_range_diff()
 	local curr_version=$7
 
 	if [[ $# -lt 7 ]]; then
-		error "range_diff() requires prev_name, curr_name, prev_mbox_path, curr_mbox_path, tmpdir, prev_version, curr_version parameters"
+		error "$FUNCNAME() requires prev_name, curr_name, prev_mbox_path, curr_mbox_path, tmpdir, prev_version, curr_version parameters"
 	fi
 
 	local prev_branch=$(get_review_branch $prev_name $prev_version)
@@ -619,7 +619,7 @@ function checkpatch_range()
 	local version=$2
 
 	if [[ $# -lt 2 ]]; then
-		error "checkpatch_range requires mbox_path, version parameters"
+		error "$FUNCNAME() requires mbox_path, version parameters"
 	fi
 
 	# b4 won't return an error if checkpatch fails, so we have to manually
@@ -711,7 +711,7 @@ function extract_mbox_patches()
 	local version=$4
 
 	if [[ $# -lt 4 ]]; then
-		error "extract_mbox_patches() requires mbox_path, dir, tmpdir, version parameters"
+		error "$FUNCNAME() requires mbox_path, dir, tmpdir, version parameters"
 	fi
 
 	say "--- retrieving patches for [$name]..."
@@ -728,12 +728,17 @@ function extract_mbox_patches()
 	rmdir $mailpath
 }
 
+# Check whether a given series may have already been applied by grepping commits
+# for a reference to that msgid (typically included in a Link tag).
+#
+# Params:
+#	$1 - msgid of series.
 function check_already_applied()
 {
 	local msgid=$1
 
 	if [[ $# -lt 1 ]]; then
-		error "$FUNCNAME requires msgid parameter"
+		error "$FUNCNAME() requires msgid parameter"
 	fi
 
 	found=$(git --no-pager log --oneline HEAD~1000..HEAD --grep="$msgid" -n1)
@@ -744,7 +749,7 @@ function check_already_applied()
 	fi
 }
 
-# Generate temporary 8 character word
+# Generate temporary 8 character word.
 function gen_temp_word()
 {
 	cat /dev/urandom | tr -cd 'a-z0-9' | head -c 8 || true
