@@ -743,3 +743,9 @@ function check_already_applied()
 		error "Found specified msgid in tree, run review-start-applied instead"
 	fi
 }
+
+# Generate temporary 8 character word
+function gen_temp_word()
+{
+	cat /dev/urandom | tr -cd 'a-z0-9' | head -c 8 || true
+}

@@ -21,10 +21,12 @@ if ! rev_exists ${new_base}; then
 	error "Base '${new_base}' not found"
 fi
 
-tmp_branch="${old_base}-tmp"
-if rev_exists ${tmp_branch}; then
-	error "Temporary branch '${tmp_branch} already exists"
-fi
+while true; do
+	tmp_branch="review_$(gen_temp_word)"
+	if ! rev_exists ${tmp_branch}; then
+		break
+	fi
+done
 
 curr_ref="$(get_curr_ref)"
 
