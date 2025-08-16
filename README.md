@@ -144,8 +144,11 @@ diff comparisons.
   performing the final steps to apply the rebase.
 
 * `review-vng [args...]` - Execute virtme-ng with sensible configuration options
-  for development - verbose output for dmesg logs, panic-on-warning and a
+  for development - verbose output for dmesg logs, panic-on-warning,oops and a
   configuration that is known-working with mm selftests.
+
+* `review-vng-debug [args...]` - Same as `review-vng` but with more noise useful
+  for debugging.
 
 ## Credit
 
