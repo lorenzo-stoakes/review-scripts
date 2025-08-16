@@ -9,5 +9,7 @@ scripts/config -e ext4_use_for_ext2
 scripts/config -d werror
 # This seems to give more accurate stack traces than ORC.
 scripts/config -e unwinder_frame_pointer
+# For kernel memory sanitsation.
+scripts/config -e kasan
 
 make olddefconfig
