@@ -143,6 +143,10 @@ diff comparisons.
   cherry-pick rebase started by `review-rebase` or `review-rebase-branch` -
   performing the final steps to apply the rebase.
 
+* `review-vng [args...]` - Execute virtme-ng with sensible configuration options
+  for development - verbose output for dmesg logs, panic-on-warning and a
+  configuration that is known-working with mm selftests.
+
 ## Credit
 
 Thanks to [Tomáš Janoušek](https://genserver.social/users/liskin) for his

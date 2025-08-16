@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+# Run with sensible settings for development.
+vng_run -v --append panic_on_warn=1 $@
