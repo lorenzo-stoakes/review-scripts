@@ -4,4 +4,8 @@ set -e; set -o pipefail; source __review-shared.sh
 push_kernel_root_dir
 
 # Run with sensible settings for development.
-vng_run -v --append panic_on_warn=1 $@
+vng_run -v \
+	--append "panic_on_warn=1" \
+	--append "panic_on_oops=1" \
+	--append "nokaslr" \
+	--append "no_hash_pointers" $@
