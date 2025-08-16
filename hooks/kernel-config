@@ -5,6 +5,9 @@ vng --kconfig --config ${script_dir}/hooks/extra_config 2>/dev/null
 # For some reason, vng won't set these.
 scripts/config -e ext4_fs
 scripts/config -e ext4_use_for_ext2
+# Better for development.
 scripts/config -d werror
+# This seems to give more accurate stack traces than ORC.
+scripts/config -e unwinder_frame_pointer
 
 make olddefconfig
