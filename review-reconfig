@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+push_kernel_root_dir
+make mrproper
+pop
+
+review-config

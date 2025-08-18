@@ -120,8 +120,14 @@ diff comparisons.
 * `review-config` - Simple script to configure the kernel using the
   configuration hook.
 
-* `review-config-debug` Same as review-config, but sets additional debug options
-  that might slow things down quite a bit.
+* `review-config-debug` Same as `review-config`, but sets additional debug
+  options that might slow things down quite a bit.
+
+* `review-reconfig` - Same as `review-config` only run a `make mrproper` first to
+  clear existing configuration.
+
+* `review-reconfig-debug` - Same as `review-config-debug` only run a `make
+  mrproper` first to clear existing configuration.
 
 * `review-rebase [name] [new_base] <version>` - Rebase the review branch on to
   new_base, either at the specified version, or if not specified the latest. See
