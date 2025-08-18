@@ -117,6 +117,12 @@ diff comparisons.
 * `review-build` - Simple script to configure and build the kernel using the
   configuration/build hooks.
 
+* `review-rebuild` - Same as `review-build` but runs `review-reconfig` first,
+  resetting the config and rebuilding the kernel from scratch.
+
+* `review-rebuild-debug` - Same as `review-rebuild` but uses
+  `review-reconfig-debug` to build a kernel with extra debug checks.
+
 * `review-config` - Simple script to configure the kernel using the
   configuration hook.
 

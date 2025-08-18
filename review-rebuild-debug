@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+push_kernel_root_dir
+
+review-reconfig-debug
+${script_dir}/hooks/kernel-build
