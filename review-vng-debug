@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e; set -o pipefail; source __review-shared.sh
 
-# Also show all log levels.
-review-vng --append "ignore_log_level"
+push_kernel_root_dir
+
+vng_run_debug $@

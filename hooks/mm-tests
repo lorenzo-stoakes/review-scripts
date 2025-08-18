@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Run from within vng, in mm selftests directory.
+
+sudo ./run_vmtests.sh
+# Check if we have any memory leaks.
+echo scan | sudo tee /sys/kernel/debug/kmemleak
+sudo cat /sys/kernel/debug/kmemleak

@@ -3,4 +3,4 @@ set -e; set -o pipefail; source __review-shared.sh
 
 push_kernel_root_dir
 
-vng_run $@
+${script_dir}/hooks/kernel-config-debug

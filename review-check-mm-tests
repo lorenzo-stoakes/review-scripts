@@ -32,7 +32,7 @@ curr_ref="$(get_curr_ref)"
 
 # Configure and build kernel.
 git checkout -q $branch
-${script_dir}/hooks/kernel-config
+${script_dir}/hooks/kernel-config-debug
 ${script_dir}/hooks/kernel-build
 
 # check_prep put us in the root kernel directory.

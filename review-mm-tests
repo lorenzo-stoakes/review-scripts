@@ -21,7 +21,7 @@ fi
 build_mm_tests
 
 # Kernel build.
-${script_dir}/hooks/kernel-config
+${script_dir}/hooks/kernel-config-debug
 ${script_dir}/hooks/kernel-build
 
 # Run the mm tests in virtme-ng.

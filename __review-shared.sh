@@ -665,14 +665,23 @@ function build_mm_tests()
 # Run with sensible defaults that work for mm-tests.
 function vng_run()
 {
-	vng --overlay-rwdir /mnt -m 4G -p 2 $@
+	vng --overlay-rwdir /mnt -m 4G -p 2 \
+	    --append "nokaslr" \
+	    --append "no_hash_pointers" $@
+}
+
+function vng_run_debug()
+{
+	vng_run -v  \
+		--append "panic_on_warn=1" \
+		--append "panic_on_oops=1" $@
 }
 
 function __run_mm_tests()
 {
 	# Execute the tests using virtme-ng. We use the overlay rwdir for some
 	# of the hugetlb tests that need access to /mnt.
-	vng_run --cwd tools/testing/selftests/mm -- sudo ./run_vmtests.sh
+	vng_run_debug --cwd tools/testing/selftests/mm -- ${script_dir}/hooks/mm-tests
 }
 
 # Execute mm tests using virtme-ng.
