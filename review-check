@@ -34,7 +34,7 @@ curr_ref="$(get_curr_ref)"
 # Go to the base first and configure there.
 git checkout -q $tag
 make clean
-${script_dir}/hooks/kernel-config
+${script_dir}/hooks/kernel-config-debug
 
 # On assumption b4 doesn't do anything odd when base commit specified, start
 # from common base.
