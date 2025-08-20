@@ -5,6 +5,11 @@ export __review_no_old_def_config="Y"
 
 ${script_dir}/hooks/kernel-config
 
+# Re-enable, we want warnings to fail build.
+scripts/config -e werror
+
+# Enable kasan, kmemleak, lockdep for debugging purposes.
+scripts/config -e kasan
 scripts/config -e debug_kmemleak
 scripts/config -e prove_locking
 
