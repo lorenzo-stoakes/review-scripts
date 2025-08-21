@@ -1,5 +1,10 @@
 # review-scripts
 
+**WARNING:** This is very early days, I am using these on a daily basis, and
+also bugfixing as I go, so this isn't guaranteed to work on your system or not
+have weird bugs. Note that `review-start-*` will insert tags to track bases of
+review series in the kernel git tree
+
 A series of scripts to help reviewing of kernel patch series. These are
 essentially light wrappers around other tooling to make review faster.
 
@@ -43,7 +48,10 @@ So that you can resolve conflicts in series when they are applied.
 Kernel configuration and build scripts are located in the `hooks/` subdirectory:
 
 * `kernel-config` - run once before build.
+* `kernel-config-debug` - run once before build, with debug settings.
 * `kernel-build` - run for each build.
+
+These can be adjusted to taste.
 
 ## Scripts
 
