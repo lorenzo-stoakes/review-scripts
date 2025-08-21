@@ -19,7 +19,6 @@ if ! is_valid_msgid "$msgid"; then
 	version=${version:-1}
 fi
 
-
 if [[ -z "$version" ]]; then
 	tmpdir="$(get_temp_dir)"
 	cleanup_dir_on_exit $tmpdir
