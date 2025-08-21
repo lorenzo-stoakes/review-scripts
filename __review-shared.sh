@@ -594,11 +594,18 @@ function review_range_diff()
 	local prev_filename="review-${prev_name}-v${prev_version}.mbx"
 	local curr_filename="review-${curr_name}-v${curr_version}.mbx"
 
-	# Extract versions.
-	local prev_path=$(extract_version_mbox "${prev_mbox_path}" "$tmpdir" "${prev_filename}" "${prev_version}")
-	local curr_path=$(extract_version_mbox "${curr_mbox_path}" "$tmpdir" "${curr_filename}" "${curr_version}")
+	local could_use_b4="yes"
+	local prev_path
+	local curr_path
 
-	if ! fancy_range_diff_b4 "${prev_path}" "${curr_path}"; then
+	if [[ "${prev_mbox_path}" == "stub" ]] || [[ "${curr_mbox_path}" == "stub" ]]; then
+		could_use_b4="no"
+	else
+		prev_path=$(extract_version_mbox "${prev_mbox_path}" "$tmpdir" "${prev_filename}" "${prev_version}")
+		curr_path=$(extract_version_mbox "${curr_mbox_path}" "$tmpdir" "${curr_filename}" "${curr_version}")
+	fi
+
+	if [[ "${could_use_b4}" == "no" ]] || ! fancy_range_diff_b4 "${prev_path}" "${curr_path}"; then
 		warn "Unable to use b4 diff to perform range-diff, trying to use local review branches"
 
 		local prev_tag="$(get_review_tag ${prev_name})"
@@ -768,4 +775,34 @@ function check_already_applied()
 function gen_temp_word()
 {
 	cat /dev/urandom | tr -cd 'a-z0-9' | head -c 8 || true
+}
+
+# Is this a valid msgid, or is this a stub entry for an off-list series?
+#
+# Params:
+#	$1 - msgid of series.
+function is_valid_msgid()
+{
+	local msgid=$1
+
+	if [[ $# -lt 1 ]]; then
+		error "$FUNCNAME() requires msgid parameter"
+	fi
+
+	[[ "$msgid" != "stub" ]]
+}
+
+# Manually checkpatch a series using the local script.
+#
+# Params:
+#	$1 - the name given to the series review.
+function checkpatch_range_manual()
+{
+	local name=$1
+
+	if [[ $# -lt 1 ]]; then
+		error "$FUNCNAME() requires name parameter"
+	fi
+
+	# TODO
 }

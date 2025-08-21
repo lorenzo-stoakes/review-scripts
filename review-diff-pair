@@ -17,23 +17,35 @@ if ! has_review_started ${curr_name}; then
 	error "review for '${curr_name}' not started"
 fi
 
-tmpdir="$(get_temp_dir)"
-cleanup_dir_on_exit $tmpdir
-
 prev_msgid="$(get_review_msgid ${prev_name})"
 curr_msgid="$(get_review_msgid ${curr_name})"
 
-prev_mbox_path=$(retrieve_mbox "${prev_name}" ${prev_msgid} $tmpdir quiet)
-if [[ -z ${prev_mbox_path} ]]; then
-	error "could not retrieve mbox for '${prev_name}'"
+if ! is_valid_msgid "${prev_msgid}"; then
+	prev_version=${prev_version:-1}
+fi
+if ! is_valid_msgid "${curr_msgid}"; then
+	curr_version=${curr_version:-1}
 fi
 
-curr_mbox_path=$(retrieve_mbox "${curr_name}" ${curr_msgid} $tmpdir quiet)
-if [[ -z ${curr_mbox_path} ]]; then
-	error "could not retrieve mbox for '${curr_name}'"
+if [[ -z "${prev_version}" ]] || [[ -z "${curr_version}" ]]; then
+	tmpdir="$(get_temp_dir)"
+	cleanup_dir_on_exit $tmpdir
+
+	prev_mbox_path=$(retrieve_mbox "${prev_name}" ${prev_msgid} $tmpdir quiet)
+	if [[ -z ${prev_mbox_path} ]]; then
+		error "could not retrieve mbox for '${prev_name}'"
+	fi
+
+	curr_mbox_path=$(retrieve_mbox "${curr_name}" ${curr_msgid} $tmpdir quiet)
+	if [[ -z ${curr_mbox_path} ]]; then
+		error "could not retrieve mbox for '${curr_name}'"
+	fi
+
+	prev_version=${prev_version:-"$(get_latest_revision ${prev_mbox_path})"}
+	curr_version=${curr_version:-"$(get_latest_revision ${curr_mbox_path})"}
 fi
 
-prev_version=${prev_version:-"$(get_latest_revision ${prev_mbox_path})"}
-curr_version=${curr_version:-"$(get_latest_revision ${curr_mbox_path})"}
+prev_mbox_path={prev_mbox_path:-stub}
+curr_mbox_path={curr_mbox_path:-stub}
 
 review_range_diff ${prev_name} ${curr_name} ${prev_mbox_path} ${curr_mbox_path} $tmpdir ${prev_version} ${curr_version}

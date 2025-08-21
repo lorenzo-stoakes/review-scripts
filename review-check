@@ -17,11 +17,16 @@ fi
 tmpdir="$(get_temp_dir)"
 cleanup_dir_on_exit $tmpdir
 msgid="$(get_review_msgid $name)"
-mbox_path=$(retrieve_mbox $name $msgid $tmpdir)
 
-# If no version specified, get latest.
-if [[ -z "$version" ]]; then
-	version="$(get_latest_revision ${mbox_path})"
+if is_valid_msgid "$msgid"; then
+	mbox_path=$(retrieve_mbox $name $msgid $tmpdir)
+
+	# If no version specified, get latest.
+	if [[ -z "$version" ]]; then
+		version="$(get_latest_revision ${mbox_path})"
+	fi
+else
+	version=${version:-1}
 fi
 
 branch="$(get_review_branch $name $version)"
@@ -48,4 +53,6 @@ git checkout -q "${curr_ref}"
 
 echo "---- ALL PATCHES BUILT OK ---- :)"
 
-checkpatch_range "${mbox_path}" $version
+if is_valid_msgid "$msgid"; then
+	checkpatch_range "${mbox_path}" $version
+fi

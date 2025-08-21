@@ -1,14 +1,14 @@
 #!/bin/bash
 set -e; set -o pipefail; source __review-shared.sh
 
-if [[ $# -lt 5 ]]; then
-	usage "[name] [base ref] [head ref] [msgid] [version]"
+if [[ $# -lt 3 ]]; then
+	usage "[name] [base ref] [head ref] <version> <msgid>"
 fi
 name=$1
 base_ref=$2
 head_ref=$3
-msgid=$4
-version=$5
+version=${4:-1}
+msgid=$5
 
 check_prep
 
@@ -31,7 +31,12 @@ fi
 curr_ref="$(get_curr_ref)"
 
 git checkout -q ${base_ref}~1
-git tag $tag -m "$msgid"
+
+if [[ -n "$msgid" ]]; then
+	git tag $tag -m "$msgid"
+else
+	git tag $tag -m "stub"
+fi
 
 git checkout -q ${head_ref}
 git checkout -qb $branch
@@ -39,5 +44,7 @@ git checkout -qb $branch
 # Restore prior ref.
 git checkout "${curr_ref}"
 
-# Now get everything else we can.
-review-get $name
+# Now get everything else we can, if we can.
+if [[ -n "$msgid" ]]; then
+	review-get $name
+fi

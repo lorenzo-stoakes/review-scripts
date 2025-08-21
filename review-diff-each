@@ -14,10 +14,14 @@ if ! rev_exists $tag; then
 	error "review for '$name' not started"
 fi
 
+msgid="$(get_review_msgid $name)"
+if ! is_valid_msgid "$msgid"; then
+	version=${version:-1}
+fi
+
 if [[ -z "$version" ]]; then
 	tmpdir="$(get_temp_dir)"
 	cleanup_dir_on_exit $tmpdir
-	msgid="$(get_review_msgid $name)"
 	mbox_path=$(retrieve_mbox $name $msgid $tmpdir quiet)
 	version="$(get_latest_revision ${mbox_path})"
 fi
