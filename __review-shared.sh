@@ -289,7 +289,7 @@ function retrieve_mbox()
 	echo "$dir/${mbox_filename}"
 }
 
-__latest_revision_regex="\[PATCH.+\]|\[PATCH RFC.+\]|\[RFC PATCH.+\]|\[RFC.+\]"
+__latest_revision_regex="\[PATCH.*\]|\[PATCH RFC.+\]|\[RFC PATCH.+\]|\[RFC.+\]"
 
 function __get_latest_revision()
 {
@@ -298,7 +298,7 @@ function __get_latest_revision()
 	# The below won't retrieve v1, so we must wrap this operation.
 
 	# A bit horrible, but does the job...
-	grep -Ei "$__latest_revision_regex" ${mbox_path} | \
+	grep -Ei "${__latest_revision_regex}" ${mbox_path} | \
 		grep -Eio 'v[0-9]+' | \
 		sed -nE 's/v([0-9]+)/\1/pi' | \
 		sort -nr | \
