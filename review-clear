@@ -9,5 +9,9 @@ name=$1
 check_prep
 
 tag="$(get_review_tag $name)"
+if ! rev_exists $tag; then
+	error "review for '$name' not started"
+fi
+
 clear_review_branches $name $tag
 review-stop $name warn
