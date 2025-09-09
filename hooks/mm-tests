@@ -2,6 +2,14 @@
 
 # Run from within vng, in mm selftests directory.
 
+dir="$PWD"
+
+# We have overlayfs r/w mounted /mnt in vngxb, so make a copy in this directory
+# so local file tests work.
+cd /mnt
+sudo mkdir mm_tests
+cd mm_tests
+sudo cp -R "$dir"/* .
 sudo ./run_vmtests.sh
 # Check if we have any memory leaks.
 echo scan | sudo tee /sys/kernel/debug/kmemleak
