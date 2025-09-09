@@ -701,8 +701,9 @@ function run_mm_tests()
 	# figure. Either way, we have to figure this out ourselves.
 	if ! grep "^# SUMMARY:" $tmpfile | grep -q "FAIL=0"; then
 		say # Add space.
-		say "-- not ok output: --"
+		say "--- not ok output..."
 		grep "not ok" $tmpfile >&2
+		say "-- ...not ok output --"
 		rm $tmpfile
 		exit 1
 	fi
