@@ -695,25 +695,19 @@ function __run_mm_tests()
 function run_mm_tests()
 {
 	tmpfile=$(mktemp)
-	fail=""
-	if ! __run_mm_tests 2>&1 | tee $tmpfile; then
-		fail="yes"
-	fi
-
-	# For some reason the mm tests given an exit code even if FAIL=0
-	# so account for this.
-	if [[ -n "$fail" ]] && grep "^# SUMMARY:" $tmpfile | grep -q "FAIL=0"; then
-		fail=""
+	(__run_mm_tests 2>&1 || true) | tee $tmpfile
+	# For some reason the mm tests given an exit code even if FAIL=0 so
+	# account for this. Sometimes it gives no exit code with FAIL>0. Go
+	# figure. Either way, we have to figure this out ourselves.
+	if ! grep "^# SUMMARY:" $tmpfile | grep -q "FAIL=0"; then
+		say # Add space.
+		say "-- not ok output: --"
+		grep "not ok" $tmpfile >&2
+		rm $tmpfile
+		exit 1
 	fi
 
 	rm $tmpfile
-
-	if [[ -n "$fail" ]]; then
-		say # Add space.
-		say "-- not ok output: --"
-		grep "not ok" $logpath >&2
-		exit 1
-	fi
 }
 
 # Extract patches from an mbox from a larger mbox at a specific version.
