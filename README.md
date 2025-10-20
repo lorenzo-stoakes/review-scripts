@@ -175,6 +175,8 @@ diff comparisons.
 * `review-vng-debug [args...]` - Same as `review-vng` but with more noise useful
   for debugging.
 
+* `review-ls` - Lists all review branches in a kernel tree.
+
 ## Credit
 
 Thanks to [Tomáš Janoušek](https://genserver.social/users/liskin) for his
