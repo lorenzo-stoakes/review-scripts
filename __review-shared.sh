@@ -754,12 +754,13 @@ function extract_mbox_patches()
 function check_already_applied()
 {
 	local msgid=$1
+	local head=$2
 
-	if [[ $# -lt 1 ]]; then
-		error "$FUNCNAME() requires msgid parameter"
+	if [[ $# -lt 2 ]]; then
+		error "$FUNCNAME() requires msgid, head parameters"
 	fi
 
-	found=$(git --no-pager log --oneline HEAD~1000..HEAD --grep="$msgid" -n1)
+	found=$(git --no-pager log --oneline HEAD~1000..HEAD --grep="$msgid" -n1 $head)
 
 	if [[ -n "$found" ]]; then
 		say "$found"

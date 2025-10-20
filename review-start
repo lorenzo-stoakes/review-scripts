@@ -20,7 +20,7 @@ if rev_exists $tag; then
 fi
 
 # Do we see this msgid recently applied in tree? Error out if so.
-check_already_applied $msgid
+check_already_applied $msgid $head
 
 # We tag early so we don't have any issues with trying again on a broken get.
 git checkout -q $head
