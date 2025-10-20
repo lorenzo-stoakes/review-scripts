@@ -45,7 +45,7 @@ if [[ -z "${prev_version}" ]] || [[ -z "${curr_version}" ]]; then
 	curr_version=${curr_version:-"$(get_latest_revision ${curr_mbox_path})"}
 fi
 
-prev_mbox_path={prev_mbox_path:-stub}
-curr_mbox_path={curr_mbox_path:-stub}
+prev_mbox_path=${prev_mbox_path:-stub}
+curr_mbox_path=${curr_mbox_path:-stub}
 
 review_range_diff ${prev_name} ${curr_name} ${prev_mbox_path} ${curr_mbox_path} $tmpdir ${prev_version} ${curr_version}
