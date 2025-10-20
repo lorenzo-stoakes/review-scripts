@@ -27,21 +27,24 @@ if ! is_valid_msgid "${curr_msgid}"; then
 	curr_version=${curr_version:-1}
 fi
 
-if [[ -z "${prev_version}" ]] || [[ -z "${curr_version}" ]]; then
-	tmpdir="$(get_temp_dir)"
-	cleanup_dir_on_exit $tmpdir
+tmpdir="$(get_temp_dir)"
+cleanup_dir_on_exit $tmpdir
 
-	prev_mbox_path=$(retrieve_mbox "${prev_name}" ${prev_msgid} $tmpdir quiet)
-	if [[ -z ${prev_mbox_path} ]]; then
-		error "could not retrieve mbox for '${prev_name}'"
-	fi
+prev_mbox_path=$(retrieve_mbox "${prev_name}" ${prev_msgid} $tmpdir quiet)
+if [[ -z ${prev_mbox_path} ]]; then
+	error "could not retrieve mbox for '${prev_name}'"
+fi
 
-	curr_mbox_path=$(retrieve_mbox "${curr_name}" ${curr_msgid} $tmpdir quiet)
-	if [[ -z ${curr_mbox_path} ]]; then
-		error "could not retrieve mbox for '${curr_name}'"
-	fi
+curr_mbox_path=$(retrieve_mbox "${curr_name}" ${curr_msgid} $tmpdir quiet)
+if [[ -z ${curr_mbox_path} ]]; then
+	error "could not retrieve mbox for '${curr_name}'"
+fi
 
+if [[ -z "${prev_version}" ]]; then
 	prev_version=${prev_version:-"$(get_latest_revision ${prev_mbox_path})"}
+fi
+
+if [[ -z "${curr_version}" ]]; then
 	curr_version=${curr_version:-"$(get_latest_revision ${curr_mbox_path})"}
 fi
 
