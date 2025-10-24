@@ -60,10 +60,11 @@ series. Therefore you may need to have separate review names for separate
 revisions. You can use `review-diff-pair` to workaround this issue for range
 diff comparisons.
 
-* `review-start [name] [head] [msgid]` - Start a review which you're naming
-  `name`, which you're basing on revision `head` and where `msgid` is the msgid
-  that exists in lore for a message in one of the revisions you intend to
-  review. Runs `review-get` on startup to setup review branches.
+* `review-start [name] [head] [msgid] <override>` - Start a review which you're
+  naming `name`, which you're basing on revision `head` and where `msgid` is the
+  msgid that exists in lore for a message in one of the revisions you intend to
+  review. Runs `review-get` on startup to setup review branches. If `override`
+  is not empty, ignore any checks for existing series in the tree.
 
 * `review-start-applied [name] [base ref] [head ref] [version] <msgid>` Manually
   start a review where the series has already been applied and exists in the

@@ -2,11 +2,12 @@
 set -e; set -o pipefail; source __review-shared.sh
 
 if [[ $# -lt 3 ]]; then
-	usage "[name] [head] [msgid]"
+	usage "[name] [head] [msgid] <override>"
 fi
 name=$1
 head=$2
 msgid=$3
+override=$4
 
 check_prep
 
@@ -20,7 +21,9 @@ if rev_exists $tag; then
 fi
 
 # Do we see this msgid recently applied in tree? Error out if so.
-check_already_applied $msgid $head
+if [[ -z "$override" ]]; then
+	check_already_applied $msgid $head
+fi
 
 # We tag early so we don't have any issues with trying again on a broken get.
 git checkout -q $head
