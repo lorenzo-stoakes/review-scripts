@@ -30,6 +30,12 @@ function do_stderr()
 			continue
 		fi
 
+		# Spurious output, carry on.
+		if [[ "$line" =~ "warning: unsafe" ]]; then
+			echo $line >&2
+			continue
+		fi
+
 		# OK we hit an error, stop the stdout output.
 		touch "$flag_file"
 
