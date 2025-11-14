@@ -60,6 +60,9 @@ series. Therefore you may need to have separate review names for separate
 revisions. You can use `review-diff-pair` to workaround this issue for range
 diff comparisons.
 
+* `review-mk` - Build kernel using all system cores, terminating the build and
+  all stdout output upon seeing stderr.
+
 * `review-start [name] [head] [msgid] <override>` - Start a review which you're
   naming `name`, which you're basing on revision `head` and where `msgid` is the
   msgid that exists in lore for a message in one of the revisions you intend to

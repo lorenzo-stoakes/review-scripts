@@ -1,0 +1,77 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+set -m # For job control.
+
+push_kernel_root_dir
+
+UNFINISHED_JOBS_GLOB="unfinished jobs...."
+
+# Execute kernel build.
+function do_build()
+{
+	# Force colour output even when piped.
+	make -j $(nproc) KCFLAGS="-fdiagnostics-color=always" $@
+}
+
+# Cleanup anything left behind.
+function cleanup()
+{
+	rm -f $flag_file
+}
+
+# stderr is piped to this function in a subshell.
+function do_stderr()
+{
+	unset pid
+	while IFS= read -r line; do
+		# First line is the PID of the topmost make command.
+		if [[ -z "$pid" ]]; then
+			pid=$line
+			continue
+		fi
+
+		# OK we hit an error, stop the stdout output.
+		touch "$flag_file"
+
+		# If we are at the end of meaningful stderr output, kill the
+		# build...
+		if [[ "$line" =~ "${UNFINISHED_JOBS_GLOB}" ]]; then
+			# Stop the build immediately & exit.
+			kill $pid
+			exit 1
+		fi
+
+		# ...Otherwise simply output the next stderr line.
+		echo "$line" >&2
+	done
+}
+
+# stdout is piped to this function in a subshell.
+function do_stdout()
+{
+	while IFS= read -r line; do
+		if [[ -e "$flag_file" ]]; then
+			# Drain pipe & exit.
+			cat > /dev/null
+			break
+		fi
+
+		echo "$line"
+	done
+}
+
+# Hack to grab PID in truly hideous fashion.
+function cmd()
+{
+	# We turned on job control with set -m, put build into background...
+	do_build $@ &
+	# ...grab PID and output to stderr...
+	echo $! >&2
+	# ...then foreground right away.
+	fg
+}
+
+flag_file=$(mktemp -u)
+trap cleanup EXIT
+cmd $@ 2> >(do_stderr) 1> >(do_stdout)
+scripts/clang-tools/gen_compile_commands.py || true
