@@ -34,22 +34,13 @@ if ! rev_exists $branch; then
 	error "cannot find branch '$branch'"
 fi
 
-curr_ref="$(get_curr_ref)"
-
-# Go to the base first and configure there.
-git checkout -q $tag
-make clean
-${script_dir}/hooks/kernel-config-debug
-
 # On assumption b4 doesn't do anything odd when base commit specified, start
 # from common base.
 
 from=$(get_ref_hash "$tag")
 to=$(get_ref_hash "$branch")
 
-git checkout -q $to
-git rebase --exec ${script_dir}/hooks/kernel-build $from
-git checkout -q "${curr_ref}"
+review-build-commits $from $to
 
 echo "---- ALL PATCHES BUILT OK ---- :)"
 

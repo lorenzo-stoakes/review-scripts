@@ -181,6 +181,10 @@ diff comparisons.
 
 * `review-ls` - Lists all review branches in a kernel tree.
 
+* `review-build-commits [commit from] <commit to>` - Build all commits in a
+  range (if `commit to` is not specified, this defaults to `HEAD`) ensuring that
+  no individual commit breaks the build.
+
 ## Credit
 
 Thanks to [Tomáš Janoušek](https://genserver.social/users/liskin) for his
