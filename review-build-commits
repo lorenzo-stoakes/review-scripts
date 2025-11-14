@@ -29,4 +29,6 @@ function do_per_commit_build()
 	echo "---- BUILD using $config succeeded :) ----"
 }
 
+curr_ref="$(get_curr_ref)"
 do_per_commit_build kernel-config-debug
+git checkout -q "${curr_ref}"
