@@ -185,6 +185,11 @@ diff comparisons.
   range (if `commit to` is not specified, this defaults to `HEAD`) ensuring that
   no individual commit breaks the build.
 
+* `review-build-commits-pedantic [commit from] <commit to>` - Like
+  `review-build-commits` only builds each commit against an allnoconfig, a
+  normal debug build, a rust build, a nommu build and an arm64 build to truly
+  exercise the series.
+
 ## Credit
 
 Thanks to [Tomáš Janoušek](https://genserver.social/users/liskin) for his

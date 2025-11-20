@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+make mrproper
+make allnoconfig

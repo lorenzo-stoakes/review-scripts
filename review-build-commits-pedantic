@@ -1,0 +1,32 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+if [[ $# -lt 1 ]]; then
+	error "usage: $(basename $0) [commit from] <commit to>"
+fi
+from=$1
+to=${2:-$(get_ref_hash HEAD)}
+
+push_kernel_root_dir
+
+curr_ref="$(get_curr_ref)"
+# Check allnoconfig.
+do_per_commit_build kernel-config-allno $from $to
+# Check standard debug build.
+do_per_commit_build kernel-config-debug $from $to
+# Check rust build, also uses clang so checks stuff gcc misses.
+do_per_commit_build kernel-config-rust $from $to LLVM=1
+# Build a nommu build using the RISC-V nommu defconfig.
+if which riscv64-linux-gnu-gcc >/dev/null; then
+	do_per_commit_build kernel-config-nommu $from $to ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu-
+else
+	echo "Cannot find RISC-V cross-compiler, skipping nommu" >&2
+fi
+# Build for arm64.
+if which aarch64-linux-gnu-gcc >/dev/null; then
+	do_per_commit_build kernel-config-arm64 $from $to ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+else
+	echo "Cannot find arm64 cross-compiler, skipping nommu" >&2
+fi
+
+git checkout -q "${curr_ref}"

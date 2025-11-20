@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+make mrproper
+
+# Establish usual config.
+${script_dir}/hooks/kernel-config
+
+# To get rid of the annoying LTO question we can't use 'yes' to answer, do this
+# first.
+make LLVM=1 olddefconfig
+
+# Enable rust with olddefconfig.
+scripts/config -e rust
+
+# Configure everything on.
+yes | make LLVM=1 oldconfig >/dev/null || true

@@ -829,7 +829,9 @@ function do_per_commit_build()
 	git checkout -q $to
 	make clean
 	${script_dir}/hooks/$config
-	git rebase --exec "${script_dir}/hooks/kernel-build $@" $from
+
+	cmd="${script_dir}/hooks/kernel-build $@"
+	git rebase --exec "$cmd" $from
 
 	echo "---- BUILD using $config succeeded :) ----"
 }
