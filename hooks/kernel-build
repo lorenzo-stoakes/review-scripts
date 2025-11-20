@@ -7,7 +7,7 @@ show_rev_summary
 # we already configured using a base configuration before beginning.
 yes | make oldconfig >/dev/null || true
 
-if ! make -j $(nproc); then
+if ! make -j $(nproc) $@; then
 	show_rev_summary
 	error "BUILD FAILURE!"
 fi
