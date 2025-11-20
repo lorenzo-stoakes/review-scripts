@@ -803,3 +803,33 @@ function checkpatch_range_manual()
 
 	# TODO
 }
+
+# Perform a build for every commit in the specified range.
+#
+# Params:
+#	$1 - config script to use in hooks/ directory.
+#	$2 - the commit from which we should build, inclusively.
+#	$3 - the commit to which we should build, inclusively.
+#	$@ - (remaining params, optional) - parameters to pass to make command.
+function do_per_commit_build()
+{
+	local config=$1
+	local from=$2
+	local to=$3
+
+	if [[ $# -lt 3 ]]; then
+		error "$FUNCNAME() requires config, from, to parameters"
+	fi
+
+	# Shift other parameter so we can pass parameters to the build.
+	shift 3
+
+	echo "---- BUILDING using $config... ----"
+
+	git checkout -q $to
+	make clean
+	${script_dir}/hooks/$config
+	git rebase --exec "${script_dir}/hooks/kernel-build $@" $from
+
+	echo "---- BUILD using $config succeeded :) ----"
+}
