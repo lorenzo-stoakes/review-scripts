@@ -40,7 +40,7 @@ fi
 from=$(get_ref_hash "$tag")
 to=$(get_ref_hash "$branch")
 
-review-build-commits $from $to
+review-build-commits-pedantic $from $to
 
 echo "---- ALL PATCHES BUILT OK ---- :)"
 
