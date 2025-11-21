@@ -830,7 +830,7 @@ function do_per_commit_build()
 	make clean
 	${script_dir}/hooks/$config
 
-	cmd="${script_dir}/hooks/kernel-build $@"
+	cmd="review-mk $@"
 	git rebase --exec "$cmd" $from
 
 	echo "---- BUILD using $config succeeded :) ----"
