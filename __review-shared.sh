@@ -934,3 +934,86 @@ function clean_all_configs()
 	__clean_arch_config riscv
 	make mrproper &>/dev/null
 }
+
+function __get_ubuntu_release()
+{
+	# The ubuntu release we wish to use.
+	echo "noble"
+}
+
+# Determine qemu suffix of specifie darch.
+#
+# Params:
+#	$1 - the architecture whose qemu suffix we want.
+function get_qemu_suffix()
+{
+	local arch=$1
+
+	if [[ $# -lt 1 ]]; then
+		error "$FUNCNAME() requires arch parameter"
+	fi
+
+	case "$arch" in
+	"arm64")
+		echo "aarch64";;
+	"riscv")
+		echo "riscv";;
+	*)
+		fatal "Unrecognised arch $arch";;
+	esac
+}
+
+# Determine root directory of specified arch.
+#
+# Params:
+#	$1 - the architecture whose rootfs we want.
+function get_arch_root()
+{
+	local arch=$1
+
+	if [[ $# -lt 1 ]]; then
+		error "$FUNCNAME() requires arch parameter"
+	fi
+
+	local release=$(__get_ubuntu_release)
+	local root="$HOME/.review-scripts/$release-$arch"
+	echo $root
+}
+
+function setup_arch()
+{
+	local arch=$1
+
+	if [[ $# -lt 1 ]]; then
+		error "$FUNCNAME() requires arch parameter"
+	fi
+
+	local release=$(__get_ubuntu_release)
+	local root="$(get_arch_root $arch)"
+
+	if ! [[ -d $root ]]; then
+		qemu_static_cmd="qemu-$(get_qemu_suffix $arch)-static"
+		if ! which "$qemu_static_cmd" &>/dev/null; then
+			fatal "Cannot find qemu static command $qemu_static_cmd for arch $arch"
+		fi
+
+		echo "Retrieving ubuntu $release rootfs..."
+		vng --arch $arch --root $root --root-release $release -- echo done &>/dev/null || true
+		echo "...done"
+
+		# Put static qemu into rootfs so we can chroot.
+		sudo cp $(which "$qemu_static_cmd") $root/bin/
+		# Allow DNS resolution...
+		if ! [[ -e $root/etc/__resolv.conf ]]; then
+			sudo mv $root/etc/resolv.conf $root/etc/__resolv.conf
+		fi
+		sudo cp /etc/resolv.conf $root/etc/
+
+		echo "Updating packages..."
+		sudo chroot $root qemu-aarch64-static /bin/bash -c "apt update; apt install -y build-essential libcap-dev libnuma-dev"
+		echo "...done"
+
+		# Restore original symlink.
+		sudo mv $root/etc/__resolv.conf $root/etc/resolv.conf
+	fi
+}

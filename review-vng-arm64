@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+push_kernel_root_dir
+
+root=$(get_arch_root arm64)
+
+function cleanup()
+{
+	sudo umount $root/kernel
+}
+
+if ! [[ -d $root ]]; then
+	fatal "Cannot find arm64 root directory at $root"
+fi
+
+# Bindmount the kernel directory.
+sudo mkdir -p $root/kernel
+sudo mount --bind . $root/kernel
+
+trap cleanup EXIT
+
+vng_run --arch arm64 --root $root --user root --rw $@

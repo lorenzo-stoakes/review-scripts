@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+push_kernel_root_dir
+assert_has_compiler arm64
+
+setup_arch arm64
+
+review-config-arm64
+review-mk $(get_arch_make_opts arm64)
