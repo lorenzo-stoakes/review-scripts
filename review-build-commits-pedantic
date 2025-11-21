@@ -20,13 +20,13 @@ do_per_commit_build kernel-config-rust $from $to LLVM=1
 if which riscv64-linux-gnu-gcc >/dev/null; then
 	do_per_commit_build kernel-config-nommu $from $to ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu-
 else
-	echo "Cannot find RISC-V cross-compiler, skipping nommu" >&2
+	warn "Cannot find RISC-V cross-compiler, skipping nommu"
 fi
 # Build for arm64.
 if which aarch64-linux-gnu-gcc >/dev/null; then
 	do_per_commit_build kernel-config-arm64 $from $to ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
 else
-	echo "Cannot find arm64 cross-compiler, skipping nommu" >&2
+	warn "Cannot find arm64 cross-compiler, skipping arm64"
 fi
 
 git checkout -q "${curr_ref}"
