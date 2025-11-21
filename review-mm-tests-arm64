@@ -1,0 +1,26 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+push_kernel_root_dir
+
+root=$(get_arch_root arm64)
+
+review-mk-arm64
+
+# We sadly have to make header files for arm64.
+echo Building headers...
+make -j $(nproc) $(get_arch_make_opts arm64) headers
+echo ...done.
+
+# Clean tests to avoid incorrect arch binaries sticking around...
+make clean -C tools/testing/selftests/mm clean
+
+# Build tests.
+echo Building tests...
+review-vng-arm64 --cwd "$root/kernel/tools/testing/selftests/mm" -- make -j 4
+echo ...done.
+
+# Run tests.
+echo Running tests...
+review-vng-arm64 -- ./run_mm_tests.sh
+echo ...done.

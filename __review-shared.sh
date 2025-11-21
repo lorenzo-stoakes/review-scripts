@@ -1015,5 +1015,13 @@ function setup_arch()
 
 		# Restore original symlink.
 		sudo mv $root/etc/__resolv.conf $root/etc/resolv.conf
+
+		sudo cat >$root/run_mm_tests.sh <<EOF
+			#!/bin/bash
+
+			cd /kernel/tools/testing/selftests/mm
+			./run_vmtests.sh
+EOF
+		sudo chmod +x $root/run_mm_tests.sh
 	fi
 }

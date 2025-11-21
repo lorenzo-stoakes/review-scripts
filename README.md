@@ -121,6 +121,9 @@ diff comparisons.
   and/or memory management self tests, but _no review has to be active_, this
   will simply be run against the current kernel tree for convenience.
 
+* `review-mm-tests-arm64` - Builds/runs mm selftests in an arm64
+  environment. **NOTE: slow**. Possibly buggy. But it does work kinda :)
+
 * `review-mbox [name]` - Retrieves an mbox of all mails associated with series,
   and saves it into the local directory as `review_[name].mbx`.
 
