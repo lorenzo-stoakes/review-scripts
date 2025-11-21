@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e; set -o pipefail; source __review-shared.sh
+
+# For some reason, vng won't set these.
+scripts/config -e ext4_fs
+scripts/config -e ext4_use_for_ext2
+# Better for development.
+scripts/config -d werror
+# We want GUP testing.
+scripts/config -e gup_test
