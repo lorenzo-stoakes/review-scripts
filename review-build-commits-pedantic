@@ -17,7 +17,7 @@ function build_for_arch()
 	if has_compiler $arch; then
 		do_per_commit_build kernel-config-$config $from $to $(get_arch_make_opts $arch)
 	else
-		warn "Cannot find $arch cross-compiler, skipping"
+		warn "Cannot find $arch cross-compiler with prefix $(get_compiler_prefix $arch), skipping"
 	fi
 }
 
