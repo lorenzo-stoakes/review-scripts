@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e; set -o pipefail; source __review-shared.sh
-set -x
 
-make ARCH=riscv mrproper
-make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- nommu_virt_defconfig
+make $(get_arch_make_opts riscv) mrproper
+make $(get_arch_make_opts riscv) nommu_virt_defconfig

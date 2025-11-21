@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e; set -o pipefail; source __review-shared.sh
 
-make ARCH=arm64 mrproper
+make $(get_arch_make_opts arm64) mrproper
 vng --kconfig --arch arm64 --config ${script_dir}/hooks/extra_config 2>/dev/null
 
 # For some reason, vng won't set these.
@@ -10,4 +10,4 @@ scripts/config -e ext4_use_for_ext2
 # Better for development.
 scripts/config -d werror
 
-make ARCH=arm64 olddefconfig
+make $(get_arch_make_opts arm64) olddefconfig

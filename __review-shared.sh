@@ -835,3 +835,79 @@ function do_per_commit_build()
 
 	echo "---- BUILD using $config succeeded :) ----"
 }
+
+function __get_arm64_prefix()
+{
+	echo "aarch64-linux-gnu-"
+}
+
+function __get_riscv_prefix()
+{
+	echo "riscv64-linux-gnu-"
+}
+
+# Determine the compiler collection prefix to use for specified arch.
+#
+# Params:
+#	$1 - the architecture we want the prefix for.
+function get_compiler_prefix()
+{
+	local arch=$1
+	local cmd="__get_${arch}_prefix"
+	local prefix=$($cmd)
+
+	echo $prefix
+}
+
+# Determine if we have a compiler collection for specified arch.
+#
+# Params:
+#	$1 - the architecture we wish to check for.
+function has_compiler()
+{
+	local arch=$1
+	local prefix=$(get_compiler_prefix $arch)
+
+	if [[ $# -lt 1 ]]; then
+		error "$FUNCNAME() requires arch parameter"
+	fi
+
+	which ${prefix}gcc &>/dev/null
+}
+
+# Assert that we have a compiler collection for specified arch.
+#
+# Params:
+#	$1 - the architecture we wish to check for.
+function assert_has_compiler()
+{
+	local arch=$1
+
+	if [[ $# -lt 1 ]]; then
+		error "$FUNCNAME() requires arch parameter"
+	fi
+
+	if ! has_compiler $arch; then
+		error "Cannot find $arch compiler tools with prefix $prefix"
+		exit 1
+	fi
+}
+
+# Determine the kernel build options to pass to make for cross-compilation of a
+# specified architecture.
+#
+# Params:
+#	$1 - the architecture we want to build for.
+function get_arch_make_opts()
+{
+	local arch=$1
+
+	if [[ $# -lt 1 ]]; then
+		error "$FUNCNAME() requires arch parameter"
+	fi
+
+	assert_has_compiler $arch
+	local prefix=$(get_compiler_prefix $arch)
+
+	echo "ARCH=$arch CROSS_COMPILE=$prefix"
+}

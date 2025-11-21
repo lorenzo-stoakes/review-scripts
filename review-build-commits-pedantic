@@ -9,6 +9,18 @@ to=${2:-$(get_ref_hash HEAD)}
 
 push_kernel_root_dir
 
+function build_for_arch()
+{
+	local config=$1
+	local arch=$2
+
+	if has_compiler $arch; then
+		do_per_commit_build kernel-config-$config $from $to $(get_arch_make_opts $arch)
+	else
+		warn "Cannot find $arch cross-compiler, skipping"
+	fi
+}
+
 curr_ref="$(get_curr_ref)"
 # Check allnoconfig.
 do_per_commit_build kernel-config-allno $from $to
@@ -16,17 +28,9 @@ do_per_commit_build kernel-config-allno $from $to
 do_per_commit_build kernel-config-debug $from $to
 # Check rust build, also uses clang so checks stuff gcc misses.
 do_per_commit_build kernel-config-rust $from $to LLVM=1
-# Build a nommu build using the RISC-V nommu defconfig.
-if which riscv64-linux-gnu-gcc >/dev/null; then
-	do_per_commit_build kernel-config-nommu $from $to ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu-
-else
-	warn "Cannot find RISC-V cross-compiler, skipping nommu"
-fi
-# Build for arm64.
-if which aarch64-linux-gnu-gcc >/dev/null; then
-	do_per_commit_build kernel-config-arm64 $from $to ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
-else
-	warn "Cannot find arm64 cross-compiler, skipping arm64"
-fi
+# nommu build.
+build_for_arch nommu riscv
+# arm64 build.
+build_for_arch arm64 arm64
 
 git checkout -q "${curr_ref}"
