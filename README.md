@@ -190,6 +190,9 @@ diff comparisons.
   normal debug build, a rust build, a nommu build and an arm64 build to truly
   exercise the series.
 
+* `review-clean` - Clear all configurations for all architectures and restore
+  `review-config` afterwards.
+
 ## Credit
 
 Thanks to [Tomáš Janoušek](https://genserver.social/users/liskin) for his

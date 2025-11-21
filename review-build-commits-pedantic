@@ -33,9 +33,6 @@ build_for_arch nommu riscv
 # arm64 build.
 build_for_arch arm64 arm64
 
-echo "Restoring review-config..."
-clean_all_configs
-review-config
-echo "...done"
+review-clean
 
 git checkout -q "${curr_ref}"
