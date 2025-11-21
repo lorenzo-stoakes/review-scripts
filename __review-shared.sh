@@ -672,7 +672,7 @@ function build_mm_tests()
 # Run with sensible defaults that work for mm-tests.
 function vng_run()
 {
-	vng --overlay-rwdir /mnt -m 4G \
+	vng --overlay-rwdir /mnt -m 4G -p 4 \
 	    --append "nokaslr" \
 	    --append "no_hash_pointers" $@
 }
