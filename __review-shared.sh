@@ -1010,7 +1010,7 @@ function setup_arch()
 		sudo cp /etc/resolv.conf $root/etc/
 
 		echo "Updating packages..."
-		sudo chroot $root qemu-aarch64-static /bin/bash -c "apt update; apt install -y build-essential libcap-dev libnuma-dev"
+		sudo chroot $root qemu-aarch64-static /bin/bash -c "apt update; apt install -y build-essential libcap-dev libnuma-dev liburing-dev"
 		echo "...done"
 
 		# Restore original symlink.
