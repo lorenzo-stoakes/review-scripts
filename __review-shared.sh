@@ -917,3 +917,20 @@ function config_disable_modules()
 {
 	make $@ mod2noconfig || true
 }
+
+function __clean_arch_config()
+{
+	local arch=$1
+
+	if has_compiler $arch; then
+		make $(get_arch_make_opts $arch) mrproper &>/dev/null
+	fi
+}
+
+# Nuke configs for all arches.
+function clean_all_configs()
+{
+	__clean_arch_config arm64
+	__clean_arch_config riscv
+	make mrproper &>/dev/null
+}
