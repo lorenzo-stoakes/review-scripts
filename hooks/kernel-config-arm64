@@ -11,3 +11,4 @@ scripts/config -e ext4_use_for_ext2
 scripts/config -d werror
 
 make $(get_arch_make_opts arm64) olddefconfig
+config_disable_modules $(get_arch_make_opts arm64)

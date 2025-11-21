@@ -911,3 +911,9 @@ function get_arch_make_opts()
 
 	echo "ARCH=$arch CROSS_COMPILE=$prefix"
 }
+
+# Simply drop all module options from kernel config.
+function config_disable_modules()
+{
+	make $@ mod2noconfig || true
+}

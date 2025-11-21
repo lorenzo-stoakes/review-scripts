@@ -15,3 +15,4 @@ scripts/config -e rust
 
 # Configure everything on.
 yes | make LLVM=1 oldconfig >/dev/null || true
+config_disable_modules LLVM=1

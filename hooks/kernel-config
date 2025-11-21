@@ -11,3 +11,4 @@ scripts/config -d werror
 if [[ -z "$__review_no_old_def_config" ]]; then
 	make olddefconfig
 fi
+config_disable_modules

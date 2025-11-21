@@ -3,3 +3,4 @@ set -e; set -o pipefail; source __review-shared.sh
 
 make $(get_arch_make_opts riscv) mrproper
 make $(get_arch_make_opts riscv) nommu_virt_defconfig
+config_disable_modules $(get_arch_make_opts riscv)
