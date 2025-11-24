@@ -1,10 +1,7 @@
 #!/bin/bash
 set -e; set -o pipefail; source __review-shared.sh
 
-if [[ $# -lt 1 ]]; then
-	error "usage: $(basename $0) [commit from] <commit to>"
-fi
-from=$1
+from=${1:-$(get_ref_hash HEAD)}
 to=${2:-$(get_ref_hash HEAD)}
 
 push_kernel_root_dir

@@ -184,14 +184,15 @@ diff comparisons.
 
 * `review-ls` - Lists all review branches in a kernel tree.
 
-* `review-build-commits [commit from] <commit to>` - Build all commits in a
-  range (if `commit to` is not specified, this defaults to `HEAD`) ensuring that
+* `review-build-commits <commit from> <commit to>` - Build all commits in a
+  range (if `commit from` or `commit to` is not specified, they default to
+  `HEAD` - so executing without parameters checks current commit) ensuring that
   no individual commit breaks the build.
 
-* `review-build-commits-pedantic [commit from] <commit to>` - Like
+* `review-build-commits-pedantic <commit from> <commit to>` - Like
   `review-build-commits` only builds each commit against an allnoconfig, a
-  normal debug build, a rust build, a nommu build and an arm64 build to truly
-  exercise the series.
+  normal debug build, a clang/rust build, a nommu build and an arm64 build to
+  truly exercise the series.
 
 * `review-clean` - Clear all configurations for all architectures and restore
   `review-config` afterwards.
