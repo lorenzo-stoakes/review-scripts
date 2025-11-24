@@ -814,7 +814,7 @@ function checkpatch_range_manual()
 function do_per_commit_build()
 {
 	local config=$1
-	local from=$2
+	local from="$2"~1
 	local to=$3
 
 	if [[ $# -lt 3 ]]; then
