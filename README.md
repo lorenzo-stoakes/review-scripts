@@ -197,6 +197,10 @@ diff comparisons.
 * `review-clean` - Clear all configurations for all architectures and restore
   `review-config` afterwards.
 
+* `review-mm <--vma-tests-only> <--mm-tests-only>` - Run `review-mm-tests`,
+  passing parameters on to it and `review-build-commits-pedantic` to check the
+  _current commit_ against these tests and all builds.
+
 ## Credit
 
 Thanks to [Tomáš Janoušek](https://genserver.social/users/liskin) for his
