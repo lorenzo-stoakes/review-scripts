@@ -5,7 +5,7 @@ set -e; set -o pipefail; source __review-shared.sh
 # 	--vma-tests-only - only build/run VMA tests, do not build/run mm self tests.
 #	--mm-tests-only  - only build/run mm self tests, do not build/run VMA tests.
 arg=$1
-if [[ -n "$args" ]] && [[ "$arg" != "--vma-tests-only" ]] && [[ "$arg" != "--mm-tests-only" ]]; then
+if [[ -n "$arg" ]] && [[ "$arg" != "--vma-tests-only" ]] && [[ "$arg" != "--mm-tests-only" ]]; then
 	usage "<args> where args is either --vma-tests-only or --mm-tests-only"
 fi
 
