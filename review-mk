@@ -31,7 +31,9 @@ function do_stderr()
 		fi
 
 		# Spurious output, carry on.
-		if [[ "$line" =~ "warning: unsafe|disassembly will be unreliable" ]]; then
+		if [[ "$line" =~ "warning: unsafe" ]] || \
+			   [[ "$line" =~ "disassembly will be unreliable" ]] || \
+			   [[ "$line" =~ "dtbo" ]]; then
 			echo $line >&2
 			continue
 		fi
