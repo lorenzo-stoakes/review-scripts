@@ -705,11 +705,11 @@ function run_mm_tests()
 		say "--- not ok output..."
 		grep "not ok" $tmpfile >&2
 		say "-- ...not ok output --"
-		rm $tmpfile
+		echo "-- Saved output at $tmpfile --"
 		exit 1
 	fi
 
-	rm $tmpfile
+	echo "-- Saved output at $tmpfile --"
 }
 
 # Extract patches from an mbox from a larger mbox at a specific version.
