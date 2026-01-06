@@ -2,9 +2,10 @@
 set -e; set -o pipefail; source __review-shared.sh
 
 if [[ $# -lt 1 ]]; then
-	error "usage: $(basename $0) [name]"
+	error "usage: $(basename $0) [name] <version>"
 fi
 name=$1
+version=$2
 
 check_prep
 if ! has_review_started $name; then
@@ -16,7 +17,12 @@ tmpdir="$(get_temp_dir)"
 cleanup_dir_on_exit $tmpdir
 
 mbox_path=$(retrieve_mbox $name $msgid $tmpdir quiet)
-curr_version="$(get_latest_revision ${mbox_path})"
+
+if [[ -n "$version" ]]; then
+	curr_version=$version
+else
+	curr_version="$(get_latest_revision ${mbox_path})"
+fi
 if [[ ${curr_version} -eq 1 ]]; then
 	error "v1, nothing to diff against"
 fi
