@@ -5,5 +5,5 @@ vng --kconfig --arch arm64 --config ${script_dir}/hooks/extra_config 2>/dev/null
 
 ${script_dir}/hooks/__shared_opts
 
-make $(get_arch_make_opts arm64) olddefconfig
-config_disable_modules $(get_arch_make_opts arm64)
+make $(get_arch_make_opts arm64) LLVM=1 olddefconfig
+config_disable_modules $(get_arch_make_opts arm64) LLVM=1

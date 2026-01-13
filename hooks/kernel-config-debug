@@ -6,4 +6,4 @@ export __review_no_old_def_config="Y"
 ${script_dir}/hooks/kernel-config
 ${script_dir}/hooks/__shared_debug_opts
 
-make olddefconfig
+make LLVM=1 olddefconfig

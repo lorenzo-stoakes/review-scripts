@@ -1025,3 +1025,11 @@ EOF
 		sudo chmod +x $root/run_mm_tests.sh
 	fi
 }
+
+# Build already configured kernel.
+function do_build()
+{
+	# We always want to use clang, and to generate output for clangd.
+	make -j $(nproc) LLVM=1 $@ compile_commands.json
+	make -j $(nproc) LLVM=1 $@
+}

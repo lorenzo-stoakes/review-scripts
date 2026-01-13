@@ -2,5 +2,5 @@
 set -e; set -o pipefail; source __review-shared.sh
 
 make mrproper
-make allnoconfig
-config_disable_modules
+make LLVM=1 allnoconfig
+config_disable_modules LLVM=1

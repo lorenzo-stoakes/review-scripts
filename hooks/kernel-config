@@ -6,6 +6,7 @@ vng --kconfig --config ${script_dir}/hooks/extra_config 2>/dev/null
 ${script_dir}/hooks/__shared_opts
 
 if [[ -z "$__review_no_old_def_config" ]]; then
-	make olddefconfig
+	# Get rid of annoying LTO question, we don't want it.
+	make LLVM=1 olddefconfig
 fi
-config_disable_modules $@
+config_disable_modules LLVM=1 $@

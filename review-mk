@@ -6,13 +6,6 @@ push_kernel_root_dir
 
 UNFINISHED_JOBS_GLOB="unfinished jobs...."
 
-# Execute kernel build.
-function do_build()
-{
-	# Force colour output even when piped.
-	make -j $(nproc) KCFLAGS="-fdiagnostics-color=always" $@
-}
-
 # Cleanup anything left behind.
 function cleanup()
 {
@@ -72,7 +65,8 @@ function do_stdout()
 function cmd()
 {
 	# We turned on job control with set -m, put build into background...
-	do_build $@ &
+	# (also force colour output even when piped.)
+	do_build KCFLAGS="-fdiagnostics-color=always" $@ &
 	# ...grab PID and output to stderr...
 	echo $! >&2
 	# ...then foreground right away.
