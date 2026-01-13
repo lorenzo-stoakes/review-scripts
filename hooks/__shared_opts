@@ -8,3 +8,18 @@ scripts/config -e ext4_use_for_ext2
 scripts/config -d werror
 # We want GUP testing.
 scripts/config -e gup_test
+# Don't need VGA.
+scripts/config -d vga_arb
+scripts/config -d vga_console
+# Don't need video.
+scripts/config -d acpi_video
+scripts/config -d video
+# Don't need LEDs.
+scripts/config -d input_leds
+scripts/config -d new_leds
+scripts/config -d leds_class
+scripts/config -d leds_trigger
+# We don't need DRM at all.
+scripts/config -d drm
+# Don't need sound.
+scripts/config -d sound
