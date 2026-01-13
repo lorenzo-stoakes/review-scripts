@@ -2,10 +2,12 @@
 set -e; set -o pipefail; source __review-shared.sh
 
 if [[ $# -lt 1 ]]; then
-	error "usage: $(basename $0) [name] <version>"
+	error "usage: $(basename $0) [name] <prev version> <version> or <version>"
 fi
 name=$1
-version=$2
+prev_version=$2
+version=${3:-$prev_version}
+
 
 check_prep
 if ! has_review_started $name; then
@@ -26,6 +28,9 @@ fi
 if [[ ${curr_version} -eq 1 ]]; then
 	error "v1, nothing to diff against"
 fi
-prev_version=$((${curr_version} - 1))
+
+if [[ -z "$prev_version" ]]; then
+	prev_version=$((${curr_version} - 1))
+fi
 
 review_range_diff $name $name ${mbox_path} ${mbox_path} $tmpdir ${prev_version} ${curr_version}

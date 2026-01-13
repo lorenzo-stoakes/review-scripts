@@ -87,10 +87,13 @@ diff comparisons.
 * `review-clear-branches [name]` - Just clear the branches, leave the review
   active.
 
-* `review-diff [name] <version>` - Provide a side-by-side range-diff between the
-  latest revision in the series and the prior one. If `version` specified then
-  compare `version - 1` to `version`, otherwise the latest version will be
-  compared to previous by default.
+* `review-diff [name] <version>` or `review-diff [name] <prev version>
+  <version>` - Provide a side-by-side range-diff between two versions in the
+  series, assuming b4 was able to retrieve versions successfully (if not, use
+  `review-diff-pair`). If `version` specified then compare `version - 1` to
+  `version`, if `prev version` and `version` specified then compare those
+  versions, otherwise compare the latest version with the one prior to that (the
+  default if no version parameters are specified).
 
 * `review-diff-pair [previous name] [current name] <previous version> <current
   version>` - Same as review-diff, except it's comparing ranges across separate
