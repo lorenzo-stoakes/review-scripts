@@ -1026,10 +1026,16 @@ EOF
 	fi
 }
 
+# Build already configured kernel, do _NOT_ generate symbol information in
+# compile_commands.json.
+function do_build_nosym()
+{
+	make -j $(nproc) LLVM=1 $@
+}
+
 # Build already configured kernel.
 function do_build()
 {
 	# We always want to use clang, and to generate output for clangd.
 	make -j $(nproc) LLVM=1 $@ compile_commands.json
-	make -j $(nproc) LLVM=1 $@
 }

@@ -2,6 +2,12 @@
 set -e; set -o pipefail; source __review-shared.sh
 set -m # For job control.
 
+unset nosym
+if [[ "$1" == "__NO_SYM" ]]; then
+	shift
+	nosym=yes
+fi
+
 push_kernel_root_dir
 
 UNFINISHED_JOBS_GLOB="unfinished jobs...."
@@ -64,9 +70,15 @@ function do_stdout()
 # Hack to grab PID in truly hideous fashion.
 function cmd()
 {
+	local kcflags="-fdiagnostics-color=always"
+
 	# We turned on job control with set -m, put build into background...
 	# (also force colour output even when piped.)
-	do_build KCFLAGS="-fdiagnostics-color=always" $@ &
+	if [[ -n "$nosym" ]]; then
+		do_build_nosym KCFLAGS="$kcflags" $@ &
+	else
+		do_build KCFLAGS="$kcflags" $@ &
+	fi
 	# ...grab PID and output to stderr...
 	echo $! >&2
 	# ...then foreground right away.

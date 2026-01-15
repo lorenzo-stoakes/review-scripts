@@ -211,6 +211,9 @@ diff comparisons.
   passing parameters on to it and `review-build-commits-pedantic` to check the
   _current commit_ against these tests and all builds.
 
+* `review-mk-nosym` - Same as `review-mk` but does not build
+  compile_commands.json symbol information for everything.
+
 ## Credit
 
 Thanks to [Tomáš Janoušek](https://genserver.social/users/liskin) for his
