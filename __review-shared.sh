@@ -1038,4 +1038,5 @@ function do_build()
 {
 	# We always want to use clang, and to generate output for clangd.
 	make -j $(nproc) LLVM=1 $@ compile_commands.json
+	do_build_nosym
 }
