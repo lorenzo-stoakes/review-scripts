@@ -19,6 +19,10 @@ review-xxx. Using `review-stop` or `review-clean` will clean these up.
 It will also create branches of the form `review/[name]-[version]`. Use
 `review-clean` to get rid of these.
 
+**IMPORTANT**: The tooling is now set up to use `clang` by default for
+everything and generates compile_commands.json for semantic tooling such as
+`clangd`.
+
 ## Dependencies
 
 * usual coreutils etc.
@@ -28,7 +32,8 @@ It will also create branches of the form `review/[name]-[version]`. Use
 * virtme-ng
 * neomutt
 * ansi2txt
-* delta
+* git-delta
+* clang/llvm
 
 ## Installation
 
@@ -196,7 +201,7 @@ diff comparisons.
 
 * `review-build-commits-pedantic <commit from> <commit to>` - Like
   `review-build-commits` only builds each commit against an allnoconfig, a
-  normal debug build, a clang/rust build, a nommu build and an arm64 build to
+  normal debug build, a rust build, a nommu build and an arm64 build to
   truly exercise the series.
 
 * `review-clean` - Clear all configurations for all architectures and restore
