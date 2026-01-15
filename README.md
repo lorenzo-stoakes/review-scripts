@@ -1,10 +1,5 @@
 # review-scripts
 
-**WARNING:** This is very early days, I am using these on a daily basis, and
-also bugfixing as I go, so this isn't guaranteed to work on your system or not
-have weird bugs. Note that `review-start-*` will insert tags to track bases of
-review series in the kernel git tree
-
 A series of scripts to help reviewing of kernel patch series. These are
 essentially light wrappers around other tooling to make review faster.
 
@@ -258,7 +253,7 @@ $ review-get
 Unable to find revision 1
 b4 cannot find version 1, deleting branch 'review/procmap_query-v1'
 Deleted branch review/procmap_query-v1 (was c617a4dd7102).
-$ git branch | grep review
+$ review-ls
   review/procmap_query-v2
   review/procmap_query-v3
 * review/procmap_query-v4
