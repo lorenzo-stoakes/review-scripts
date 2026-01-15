@@ -830,8 +830,8 @@ function do_per_commit_build()
 	make clean
 	${script_dir}/hooks/$config
 
-	cmd="review-mk $@"
-	git rebase --exec "$cmd" $from
+	cmd="git --no-pager log -1 --oneline --decorate --color; make LLVM=1 olddefconfig &>/dev/null; review-mk-nosym $@"
+	git rebase --quiet --exec "$cmd" $from
 
 	echo "---- BUILD using $config succeeded :) ----"
 }
