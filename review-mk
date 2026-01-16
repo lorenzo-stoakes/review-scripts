@@ -88,4 +88,3 @@ function cmd()
 flag_file=$(mktemp -u)
 trap cleanup EXIT
 cmd $@ 2> >(do_stderr) 1> >(do_stdout)
-scripts/clang-tools/gen_compile_commands.py || true
