@@ -5,7 +5,7 @@ show_rev_summary
 
 # If the series introduces config options, we want them turned on. This assumes
 # we already configured using a base configuration before beginning.
-yes | make $@ oldconfig >/dev/null || true
+yes | make LLVM=1 $@ oldconfig >/dev/null || true
 
 if ! review-mk $@; then
 	show_rev_summary

@@ -665,7 +665,7 @@ function build_mm_tests()
 {
 	push tools/testing/selftests/mm
 	make clean
-	make -j $(nproc)
+	make -j $(nproc) LLVM=1
 	pop
 }
 
