@@ -676,8 +676,7 @@ function vng_run()
 	vng --overlay-rwdir /mnt -m 16G \
 	    --numa 8G,cpus=0-7 --numa 8G,cpus=8-15 -P \
 	    --qemu-opts="-smp 16,sockets=2,cores=8,threads=1" \
-	    --append "nokaslr" \
-	    --append "no_hash_pointers" $@
+	    --append "nokaslr" --append "no_hash_pointers" $@
 }
 
 function vng_run_debug()
