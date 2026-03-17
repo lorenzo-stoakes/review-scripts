@@ -1038,6 +1038,6 @@ function do_build_nosym()
 # Build already configured kernel.
 function do_build()
 {
-	do_build_nosym
-	scripts/clang-tools/gen_compile_commands.py vmlinux.a || true
+	do_build_nosym $@
+	scripts/clang-tools/gen_compile_commands.py vmlinux.a arch/x86/boot/ || true
 }
